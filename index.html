@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FAMILJA-BUXHET</title>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1611/1611154.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1611/1611154.png">
+    <style>
+        :root { --p: #27ae60; --s: #2c3e50; --bg: #f8f9fa; --red: #e74c3c; --blue: #3498db; }
+        body { font-family: -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--s); padding: 15px; }
+        .box { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        h2 { text-align: center; margin-bottom: 20px; font-size: 1.2em; color: var(--s); }
+        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fdfdfd; }
+        button { width: 100%; padding: 16px; background: var(--p); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        button:active { transform: scale(0.97); opacity: 0.8; }
+        .hidden { display: none; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .stat-card { padding: 12px 5px; border-radius: 12px; text-align: center; font-size: 11px; font-weight: bold; }
+        .report-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
+        #tot-big { font-size: 32px; text-align: center; font-weight: bold; margin: 10px 0; color: var(--s); }
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div id="login-ui" class="box">
+    <div style="text-align:center; font-size: 60px; margin-bottom: 10px;">📊</div>
+    <h2>Buxheti Familjar</h2>
+    <input id="user" placeholder="Emri">
+    <input id="pass" type="password" placeholder="Fjalëkalimi">
+    <button onclick="login()">HYR</button>
+</div>
+
+<div id="app-ui" class="hidden">
+    <div class="box">
+        <h2 id="uDisp">Mirsevini</h2>
+        <select id="kat"><option>Duke ngarkuar...</option></select>
+        <input id="shuma" type="number" placeholder="Shuma (Lekë)" inputmode="numeric">
+        <input id="shenime" type="text" placeholder="Shënime (opsionale)">
+        <button onclick="shto()">RUAJ SHPENZIMIN</button>
+    </div>
+
+    <div id="admin-ui" class="box hidden">
+        <div style="background:#e8f5e9; padding:15px; border-radius:15px; margin-bottom:20px;">
+            <h3 style="margin:0 0 10px; font-size:14px; color:#2e7d32;">SHTO TË ARDHURA</h3>
+            <input id="burimi-fond" placeholder="Burimi (Rroga, Dyqani)">
+            <input id="shuma-fond" type="number" placeholder="Shuma L">
+            <button onclick="shtoFond()" style="background:#2e7d32; padding:12px;">SHTO FONDIN</button>
+        </div>
+        
+        <hr>
+        <h2>BILANCI DHE ARKIVI</h2>
+        <div style="display:flex; gap:10px;">
+            <select id="sel-muaji" onchange="shfaqRaportin()">
+                <option value="0">Janar</option><option value="1">Shkurt</option><option value="2">Mars</option>
+                <option value="3">Prill</option><option value="4">Maj</option><option value="5">Qershor</option>
+                <option value="6">Korrik</option><option value="7">Gusht</option><option value="8">Shtator</option>
+                <option value="9">Tetor</option><option value="10">Nëntor</option><option value="11">Dhjetor</option>
+            </select>
+            <select id="sel-viti" onchange="shfaqRaportin()">
+                <option value="2026">2026</option><option value="2025">2025</option>
+            </select>
+        </div>
+
+        <div id="tot-big">0 L</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card" style="background:#ffebee; color:#c62828;">Dalje<br><span id="res-shp">0</span></div>
+            <div class="stat-card" style="background:#e8f5e9; color:#2e7d32;">Hyrje<br><span id="res-ard">0</span></div>
+            <div class="stat-card" style="background:#e3f2fd; color:#1565c0;">Mbetja<br><span id="res-fit">0</span></div>
+        </div>
+
+        <div id="lista-raportit"></div>
+    </div>
+</div>
+
+<script>
+    const URL = "https://script.google.com/macros/s/AKfycbxVwWKj4KuOX8sepMJlcRURA36YXkzv1AoEDF-MIQDswuo4DOKp_JPczHUCLdbEokOL5w/exec";
+    let user = "", role = "";
+
+    // Autoselekto muajin aktual
+    const t = new Date();
+    document.getElementById("sel-muaji").value = t.getMonth();
+    document.getElementById("sel-viti").value = t.getFullYear();
+
+    async function login() {
+        user = document.getElementById("user").value;
+        let pass = document.getElementById("pass").value;
+        if(!user || !pass) return alert("Ploteso fushat!");
+
+       let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"login", user:user, pass:pass})})
+.catch(err => { 
+    alert("Lidhja dështoi: " + err); // Kjo do të nxjerrë një njoftim nëse URL është gabim
+});
+        let d = await r.json();
+        if(d.status == "ok") {
+            role = d.role;
+            document.getElementById("login-ui").classList.add("hidden");
+            document.getElementById("app-ui").classList.remove("hidden");
+            document.getElementById("uDisp").innerText = "👤 " + user;
+            await ngarkoKategorite();
+            if(role == "admin") {
+                document.getElementById("admin-ui").classList.remove("hidden");
+                shfaqRaportin();
+            }
+        } else alert("Te dhenat gabim!");
+    }
+
+    async function ngarkoKategorite() {
+        let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"get_kategori"})});
+        let lista = await r.json();
+        document.getElementById("kat").innerHTML = lista.map(k => `<option value="${k}">${k}</option>`).join("");
+    }
+
+    async function shto() {
+        let k = document.getElementById("kat").value, s = document.getElementById("shuma").value, sh = document.getElementById("shenime").value;
+        if(!s) return alert("Vendos shumen!");
+        
+        document.querySelector("button").innerText = "Duke ruajtur...";
+        await fetch(URL, {method:"POST", body:JSON.stringify({action:"shto", user:user, kat:k, shuma:s, shenime:sh})});
+        alert("Shpenzimi u ruajt!");
+        document.getElementById("shuma").value = "";
+        document.getElementById("shenime").value = "";
+        document.querySelector("button").innerText = "RUAJ SHPENZIMIN";
+        if(role == "admin") shfaqRaportin();
+    }
+
+    async function shtoFond() {
+        let b = document.getElementById("burimi-fond").value, s = document.getElementById("shuma-fond").value;
+        if(!s) return alert("Vendos shumen!");
+        await fetch(URL, {method:"POST", body:JSON.stringify({action:"shto_fond", burimi:b, shuma:s})});
+        alert("Fondi u shtua!");
+        document.getElementById("shuma-fond").value = "";
+        shfaqRaportin();
+    }
+
+    async function shfaqRaportin() {
+        let m = document.getElementById("sel-muaji").value, v = document.getElementById("sel-viti").value;
+        let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"raporti", muaji:m, viti:v})});
+        let d = await r.json();
+        
+        document.getElementById("res-shp").innerText = Number(d.totalShpenzime).toLocaleString() + " L";
+        document.getElementById("res-ard").innerText = Number(d.totalTeArdhurat).toLocaleString() + " L";
+        document.getElementById("res-fit").innerText = Number(d.fitimi).toLocaleString() + " L";
+        document.getElementById("tot-big").innerText = Number(d.fitimi).toLocaleString() + " L";
+
+        let h = "";
+        for(let k in d.detajet) {
+            h += `<div class="report-item"><span>${k}</span><b>${Number(d.detajet[k]).toLocaleString()} L</b></div>`;
+        }
+        document.getElementById("lista-raportit").innerHTML = h || "<p style='text-align:center;color:#999;font-size:12px;'>Pa te dhena per kete muaj.</p>";
+    }
+</script>
+</body>
+</html>
