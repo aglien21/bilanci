@@ -114,17 +114,33 @@
     }
 
     async function shto() {
-        let k = document.getElementById("kat").value, s = document.getElementById("shuma").value, sh = document.getElementById("shenime").value;
-        if(!s) return alert("Vendos shumen!");
-        
-        document.querySelector("button").innerText = "Duke ruajtur...";
-        await fetch(URL, {method:"POST", body:JSON.stringify({action:"shto", user:user, kat:k, shuma:s, shenime:sh})});
-        alert("Shpenzimi u ruajt!");
+    let k = document.getElementById("kat").value;
+    let s = document.getElementById("shuma").value;
+    let sh = document.getElementById("shenime").value;
+
+    if(!s) return alert("Vendos shumën!");
+
+    // 1. Shfaq mesazhin menjëherë (Optimizmi)
+    let btn = document.querySelector("button");
+    btn.innerText = "U DËRGUA! ✅";
+    btn.style.background = "#2ecc71";
+
+    // 2. Dërgo të dhënat në prapaskenë (pa pritur "await")
+    fetch(URL, {
+        method: "POST", 
+        mode: "no-cors", // Kjo e bën dërgimin super të shpejtë
+        body: JSON.stringify({action: "shto", user: user, kat: k, shuma: s, shenime: sh})
+    });
+
+    // 3. Pastro fushat direkt
+    setTimeout(() => {
         document.getElementById("shuma").value = "";
         document.getElementById("shenime").value = "";
-        document.querySelector("button").innerText = "RUAJ SHPENZIMIN";
+        btn.innerText = "RUAJ SHPENZIMIN";
+        btn.style.background = "#27ae60";
         if(role == "admin") shfaqRaportin();
-    }
+    }, 500); // Pas gjysmë sekonde kthehet butoni normal
+}
 
     async function shtoFond() {
         let b = document.getElementById("burimi-fond").value, s = document.getElementById("shuma-fond").value;
