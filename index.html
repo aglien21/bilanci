@@ -156,8 +156,8 @@
         let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"raporti", muaji:m, viti:v})});
         let d = await r.json();
         
-        document.getElementById("res-shp").innerText = Number(d.totalShpenzime).toLocaleString() + " L";
-        document.getElementById("res-ard").innerText = Number(d.totalTeArdhurat).toLocaleString() + " L";
+        document.getElementById("res-shp").innerText = Number(d.totalShpenzimet).toLocaleString() + " L";
+        document.getElementById("res-ard").innerText = Number(d.totalTe_Ardhurat).toLocaleString() + " L";
         document.getElementById("res-fit").innerText = Number(d.fitimi).toLocaleString() + " L";
         document.getElementById("tot-big").innerText = Number(d.fitimi).toLocaleString() + " L";
 
