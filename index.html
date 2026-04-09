@@ -3,170 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FAMILJA-BUXHET</title>
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1611/1611154.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1611/1611154.png">
+    <title>Family Finance - Sheety Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --p: #27ae60; --s: #2c3e50; --bg: #f8f9fa; --red: #e74c3c; --blue: #3498db; }
-        body { font-family: -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--s); padding: 15px; }
-        .box { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        h2 { text-align: center; margin-bottom: 20px; font-size: 1.2em; color: var(--s); }
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #eee; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #fdfdfd; }
-        button { width: 100%; padding: 16px; background: var(--p); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
-        button:active { transform: scale(0.97); opacity: 0.8; }
-        .hidden { display: none; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .stat-card { padding: 12px 5px; border-radius: 12px; text-align: center; font-size: 11px; font-weight: bold; }
-        .report-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
-        #tot-big { font-size: 32px; text-align: center; font-weight: bold; margin: 10px 0; color: var(--s); }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        body { background: #f8fafc; font-family: 'Inter', sans-serif; }
+        .pad { 
+            background: white; border: 2px solid transparent; padding: 20px 10px; 
+            border-radius: 24px; text-align: center; cursor: pointer;
+            transition: 0.2s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .pad:active { transform: scale(0.95); background: #f1f5f9; }
+        .pad.active { border-color: #3b82f6; background: #eff6ff; box-shadow: 0 0 0 4px #dbeafe; }
+        .box { background: white; padding: 25px; border-radius: 32px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+        input, select { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid #e2e8f0; outline: none; font-size: 16px; transition: 0.3s; }
+        input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px #dbeafe; }
+        .btn-main { width: 100%; padding: 20px; border-radius: 22px; font-weight: 800; transition: 0.3s; letter-spacing: -0.5px; }
+        .btn-main:active { transform: scale(0.97); opacity: 0.9; }
     </style>
 </head>
-<body>
+<body class="p-4">
 
-<div id="login-ui" class="box">
-    <div style="text-align:center; font-size: 60px; margin-bottom: 10px;">📊</div>
-    <h2>Buxheti Familjar</h2>
-    <input id="user" placeholder="Emri">
-    <input id="pass" type="password" placeholder="Fjalëkalimi">
-    <button onclick="login()">HYR</button>
+<div id="login-ui" class="max-w-xs mx-auto mt-16 box text-center">
+    <div class="flex flex-col items-center mb-8">
+        <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-cyan-400 rounded-[2.2rem] shadow-lg flex items-center justify-center mb-4 transform rotate-3">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tighter uppercase italic">Family <span class="text-blue-600">Finance</span></h2>
+    </div>
+    
+    <div class="space-y-3">
+        <select id="user-select" class="text-center font-bold text-slate-700 bg-slate-50">
+            <option>Duke u lidhur...</option>
+        </select>
+        <input id="pass" type="password" placeholder="PIN" class="text-center bg-slate-50">
+        <button id="btn-login" class="btn-main bg-slate-900 text-white shadow-xl mt-2">HYR NË SISTEM</button>
+    </div>
 </div>
 
-<div id="app-ui" class="hidden">
-    <div class="box">
-        <h2 id="uDisp">Mirsevini</h2>
-        <select id="kat"><option>Duke ngarkuar...</option></select>
-        <input id="shuma" type="number" placeholder="Shuma (Lekë)" inputmode="numeric">
-        <input id="shenime" type="text" placeholder="Shënime (opsionale)">
-        <button onclick="shto()">RUAJ SHPENZIMIN</button>
+<div id="app-ui" class="max-w-md mx-auto hidden">
+    <div class="box mb-6 border-2 border-blue-50">
+        <p class="text-[10px] font-black text-slate-400 uppercase text-center mb-2 tracking-widest">Shuma për të ruajtur</p>
+        <input id="shuma" type="number" placeholder="0 L" class="text-center text-5xl font-black text-blue-600 border-none bg-transparent" inputmode="numeric">
+        
+        <div class="grid grid-cols-3 gap-3 mt-8">
+            <div class="pad" onclick="selectPad(this, 'Ushqime')">🍎<br><span class="text-[10px] font-bold uppercase mt-1 block">Buka</span></div>
+            <div class="pad" onclick="selectPad(this, 'Lojra')">🎮<br><span class="text-[10px] font-bold uppercase mt-1 block">Lojra</span></div>
+            <div class="pad" onclick="selectPad(this, 'Internet')">🌐<br><span class="text-[10px] font-bold uppercase mt-1 block">Net</span></div>
+            <div class="pad" onclick="selectPad(this, 'Shkollë')">📚<br><span class="text-[10px] font-bold uppercase mt-1 block">Shkollë</span></div>
+            <div class="pad" onclick="selectPad(this, 'Dhurata')">🎁<br><span class="text-[10px] font-bold uppercase mt-1 block">Dhurata</span></div>
+            <div class="pad" onclick="selectPad(this, 'Tjera')">✨<br><span class="text-[10px] font-bold uppercase mt-1 block">Tjera</span></div>
+        </div>
     </div>
 
-    <div id="admin-ui" class="box hidden">
-        <div style="background:#e8f5e9; padding:15px; border-radius:15px; margin-bottom:20px;">
-            <h3 style="margin:0 0 10px; font-size:14px; color:#2e7d32;">SHTO TË ARDHURA</h3>
-            <input id="burimi-fond" placeholder="Burimi (Rroga, Dyqani)">
-            <input id="shuma-fond" type="number" placeholder="Shuma L">
-            <button onclick="shtoFond()" style="background:#2e7d32; padding:12px;">SHTO FONDIN</button>
-        </div>
-        
-        <hr>
-        <h2>BILANCI DHE ARKIVI</h2>
-        <div style="display:flex; gap:10px;">
-            <select id="sel-muaji" onchange="shfaqRaportin()">
-                <option value="0">Janar</option><option value="1">Shkurt</option><option value="2">Mars</option>
-                <option value="3">Prill</option><option value="4">Maj</option><option value="5">Qershor</option>
-                <option value="6">Korrik</option><option value="7">Gusht</option><option value="8">Shtator</option>
-                <option value="9">Tetor</option><option value="10">Nëntor</option><option value="11">Dhjetor</option>
-            </select>
-            <select id="sel-viti" onchange="shfaqRaportin()">
-                <option value="2026">2026</option><option value="2025">2025</option>
-            </select>
-        </div>
-
-        <div id="tot-big">0 L</div>
-        
-        <div class="stats-grid">
-            <div class="stat-card" style="background:#ffebee; color:#c62828;">Dalje<br><span id="res-shp">0</span></div>
-            <div class="stat-card" style="background:#e8f5e9; color:#2e7d32;">Hyrje<br><span id="res-ard">0</span></div>
-            <div class="stat-card" style="background:#e3f2fd; color:#1565c0;">Mbetja<br><span id="res-fit">0</span></div>
-        </div>
-
-        <div id="lista-raportit"></div>
-    </div>
+    <button id="btn-save" class="btn-main bg-blue-600 text-white shadow-lg shadow-blue-200 uppercase text-sm">RUAJ TË DHËNAT ✅</button>
+    
+    <p id="status-msg" class="text-center mt-6 text-xs font-bold text-slate-400 italic"></p>
 </div>
 
 <script>
-    const URL = ""https://script.google.com/macros/s/AKfycbzwLJ0wUNrNwtJSw0OT8NfT8nCL28Hxw3UOK6XuhGtIqCwxmFBttj353Ddjo0NDlgEyKg/exec";
-    let user = "", role = "";
+    const API_BASE = "https://api.sheety.co/808224abb5ea9a6f463a4cff82acb534/test";
+    const API_SHPENZIMET = `${API_BASE}/shpenzimet`;
+    const API_ANETARET = `${API_BASE}/anetaret`;
 
-    // Autoselekto muajin aktual
-    const t = new Date();
-    document.getElementById("sel-muaji").value = t.getMonth();
-    document.getElementById("sel-viti").value = t.getFullYear();
+    let uAktual = "", katZgjedhur = "", listaAnetareve = [];
 
-    async function login() {
-        user = document.getElementById("user").value;
-        let pass = document.getElementById("pass").value;
-        if(!user || !pass) return alert("Ploteso fushat!");
+    // Ngarko Anetaret
+    window.onload = async () => {
+        try {
+            const res = await fetch(API_ANETARET);
+            const data = await res.json();
+            listaAnetareve = data.anetaret;
+            
+            const selU = document.getElementById("user-select");
+            selU.innerHTML = "";
+            listaAnetareve.forEach(u => {
+                selU.innerHTML += `<option value="${u.emri}">${u.emri.toUpperCase()}</option>`;
+            });
+        } catch (err) {
+            document.getElementById("user-select").innerHTML = "<option>Gabim në lidhje!</option>";
+        }
+    };
 
-       let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"login", user:user, pass:pass})})
-.catch(err => { 
-    alert("Lidhja dështoi: " + err); // Kjo do të nxjerrë një njoftim nëse URL është gabim
-});
-        let d = await r.json();
-        if(d.status == "ok") {
-            role = d.role;
+    // Login
+    document.getElementById("btn-login").onclick = () => {
+        const emri = document.getElementById("user-select").value;
+        const pin = document.getElementById("pass").value;
+        const userFound = listaAnetareve.find(a => a.emri === emri && String(a.pin) === pin);
+
+        if (userFound) {
+            uAktual = emri;
             document.getElementById("login-ui").classList.add("hidden");
             document.getElementById("app-ui").classList.remove("hidden");
-            document.getElementById("uDisp").innerText = "👤 " + user;
-            await ngarkoKategorite();
-            if(role == "admin") {
-                document.getElementById("admin-ui").classList.remove("hidden");
-                shfaqRaportin();
-            }
-        } else alert("Te dhenat gabim!");
-    }
-
-    async function ngarkoKategorite() {
-        let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"get_kategori"})});
-        let lista = await r.json();
-        document.getElementById("kat").innerHTML = lista.map(k => `<option value="${k}">${k}</option>`).join("");
-    }
-
-    async function shto() {
-    let k = document.getElementById("kat").value;
-    let s = document.getElementById("shuma").value;
-    let sh = document.getElementById("shenime").value;
-
-    if(!s) return alert("Vendos shumën!");
-
-    // 1. Shfaq mesazhin menjëherë (Optimizmi)
-    let btn = document.querySelector("button");
-    btn.innerText = "U DËRGUA! ✅";
-    btn.style.background = "#2ecc71";
-
-    // 2. Dërgo të dhënat në prapaskenë (pa pritur "await")
-    fetch(URL, {
-        method: "POST", 
-        mode: "no-cors", // Kjo e bën dërgimin super të shpejtë
-        body: JSON.stringify({action: "shto", user: user, kat: k, shuma: s, shenime: sh})
-    });
-
-    // 3. Pastro fushat direkt
-    setTimeout(() => {
-        document.getElementById("shuma").value = "";
-        document.getElementById("shenime").value = "";
-        btn.innerText = "RUAJ SHPENZIMIN";
-        btn.style.background = "#27ae60";
-        if(role == "admin") shfaqRaportin();
-    }, 500); // Pas gjysmë sekonde kthehet butoni normal
-}
-
-    async function shtoFond() {
-        let b = document.getElementById("burimi-fond").value, s = document.getElementById("shuma-fond").value;
-        if(!s) return alert("Vendos shumen!");
-        await fetch(URL, {method:"POST", body:JSON.stringify({action:"shto_fond", burimi:b, shuma:s})});
-        alert("Fondi u shtua!");
-        document.getElementById("shuma-fond").value = "";
-        shfaqRaportin();
-    }
-
-    async function shfaqRaportin() {
-        let m = document.getElementById("sel-muaji").value, v = document.getElementById("sel-viti").value;
-        let r = await fetch(URL, {method:"POST", body:JSON.stringify({action:"raporti", muaji:m, viti:v})});
-        let d = await r.json();
-        
-        document.getElementById("res-shp").innerText = Number(d.totalShpenzimet).toLocaleString() + " L";
-        document.getElementById("res-ard").innerText = Number(d.totalTeArdhura).toLocaleString() + " L";
-        document.getElementById("res-fit").innerText = Number(d.fitimi).toLocaleString() + " L";
-        document.getElementById("tot-big").innerText = Number(d.fitimi).toLocaleString() + " L";
-
-        let h = "";
-        for(let k in d.detajet) {
-            h += `<div class="report-item"><span>${k}</span><b>${Number(d.detajet[k]).toLocaleString()} L</b></div>`;
+        } else {
+            alert("⚠️ PIN i gabuar! Provoje përsëri.");
         }
-        document.getElementById("lista-raportit").innerHTML = h || "<p style='text-align:center;color:#999;font-size:12px;'>Pa te dhena per kete muaj.</p>";
-    }
+    };
+
+    window.selectPad = (el, kat) => {
+        document.querySelectorAll('.pad').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        katZgjedhur = kat;
+    };
+
+    // Ruaj Shpenzimin
+    document.getElementById("btn-save").onclick = async () => {
+        const shuma = document.getElementById("shuma").value;
+        const status = document.getElementById("status-msg");
+
+        if (!shuma || !katZgjedhur) {
+            alert("Shkruaj shumën dhe zgjidh një kategori!");
+            return;
+        }
+
+        document.getElementById("btn-save").innerText = "DUKE U RUAJTUR...";
+        
+        const dataToSend = {
+            shpenzimet: {
+                data: new Date().toLocaleDateString('sq-AL'),
+                perdoruesi: uAktual,
+                kategoria: katZgjedhur,
+                shuma: Number(shuma),
+                shenime: "Shtuar nga App"
+            }
+        };
+
+        try {
+            const response = await fetch(API_SHPENZIMET, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend)
+            });
+
+            if (response.ok) {
+                status.innerText = "Sapo u ruajt në Google Sheets! 🚀";
+                document.getElementById("shuma").value = "";
+                document.querySelectorAll('.pad').forEach(p => p.classList.remove('active'));
+                katZgjedhur = "";
+                setTimeout(() => { status.innerText = ""; }, 3000);
+            }
+        } catch (err) {
+            alert("Ndodhi një gabim! Sigurohu që Sheety është aktiv.");
+        } finally {
+            document.getElementById("btn-save").innerText = "RUAJ TË DHËNAT ✅";
+        }
+    };
 </script>
 </body>
 </html>
