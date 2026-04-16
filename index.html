@@ -30,9 +30,9 @@
 
 <div id="login-ui" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-6 text-center">
     <div class="w-full max-w-sm p-10 rounded-[40px] bg-slate-900 border border-blue-500/20 shadow-2xl">
-        <span class="text-[80px] block mb-6 drop-shadow-lg">👨‍👩‍👧‍👦🏦</span>
-        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">✍🏼Financa✍🏼 <span class="text-blue-500">Family</span></h2>
-        <p class="text-slate-500 text-[14px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
+        <span class="text-[80px] block mb-6 drop-shadow-lg">💑🏼</span>
+        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">💰Buxheti💰 <span class="text-red-500">Familjar</span></h2>
+        <p class="text-slate-500 text-[12px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
         <select id="user-select" class="w-full p-5 mb-4 rounded-2xl bg-slate-800 text-white border border-slate-700 outline-none text-center font-bold text-lg">
             <option disabled selected>Duke ngarkuar përdoruesit...</option>
         </select>
@@ -53,7 +53,7 @@
             <select id="muaji" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
             <select id="viti" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
         </div>
-        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">PDF</button>
+        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">Raporti Mujor</button>
     </div>
 
     <div class="p-6 bg-slate-900 rounded-[35px] mb-4 shadow-2xl text-center text-white relative">
@@ -236,11 +236,12 @@
         } else { alert("PIN i gabuar!"); }
     };
 
+    // KËTU ËSHTË NDRYSHIMI PËR TASTIERËN (Fokusimi direkt)
     function hapModalFonde() {
         document.getElementById("fonde-shuma").value = "";
         document.getElementById("fonde-burimi").value = "";
         document.getElementById("modal-fonde").classList.remove("hidden");
-        setTimeout(() => document.getElementById("fonde-shuma").focus(), 150); // Auto-fokus
+        document.getElementById("fonde-shuma").focus(); 
     }
     function mbyllModalFonde() { document.getElementById("modal-fonde").classList.add("hidden"); }
 
@@ -264,7 +265,7 @@
     function shtoManualNeArke() { 
         prindiZgjedhur = ""; 
         document.getElementById("modal-arka-manual").classList.remove("hidden"); 
-        setTimeout(() => document.getElementById("arka-emri-input").focus(), 150); // Auto-fokus
+        document.getElementById("arka-emri-input").focus(); 
     }
     function mbyllArkaManual() { document.getElementById("modal-arka-manual").classList.add("hidden"); }
     function kryejShtimManualArka() {
@@ -289,7 +290,7 @@
         titulli.innerText = (context === 'arka') ? "Shto në Arkë" : "Shto në Pazar";
         titulli.className = (context === 'arka') ? "text-sm font-black mb-4 uppercase text-blue-600" : "text-sm font-black mb-4 uppercase text-orange-600";
         shfaqKategoriteModal();
-        setTimeout(() => document.getElementById("modal-search").focus(), 150); // Auto-fokus
+        document.getElementById("modal-search").focus(); 
     }
     function mbyllModalKategorite() { document.getElementById("modal-kategorite").classList.add("hidden"); }
     
@@ -329,10 +330,10 @@
         mbyllModalKategorite();
         if(modalContext === 'arka') { 
             document.getElementById("modal-arka-manual").classList.remove("hidden");
-            setTimeout(() => document.getElementById("arka-emri-input").focus(), 150); // Auto-fokus
+            document.getElementById("arka-emri-input").focus(); 
         } else { 
             document.getElementById("modal-pazar-tekst").classList.remove("hidden");
-            setTimeout(() => document.getElementById("pazar-manual-input").focus(), 150); // Auto-fokus
+            document.getElementById("pazar-manual-input").focus(); 
         }
     }
 
@@ -459,7 +460,7 @@
     function shfaqManualPazar() { 
         prindiZgjedhur = ""; 
         document.getElementById("modal-pazar-tekst").classList.remove("hidden"); 
-        setTimeout(() => document.getElementById("pazar-manual-input").focus(), 150); // Auto-fokus
+        document.getElementById("pazar-manual-input").focus(); 
     }
     function mbyllManualPazar() { document.getElementById("modal-pazar-tekst").classList.add("hidden"); }
     function shtoNePazarManual() { 
@@ -533,7 +534,7 @@
     function shfaqModalManual(emri) {
         kategoriaAktuale = emri; document.getElementById("manual-titulli").innerText = "Shuma: " + emri;
         document.getElementById("manual-input").value = ""; document.getElementById("modal-manual").classList.remove("hidden");
-        setTimeout(() => document.getElementById("manual-input").focus(), 150); // Auto-fokus
+        document.getElementById("manual-input").focus(); 
     }
     function mbyllModalManual() { document.getElementById("modal-manual").classList.add("hidden"); }
     function mbyllModalManualDheShto() {
