@@ -30,9 +30,9 @@
 
 <div id="login-ui" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-6 text-center">
     <div class="w-full max-w-sm p-10 rounded-[40px] bg-slate-900 border border-blue-500/20 shadow-2xl">
-        <span class="text-[80px] block mb-6 drop-shadow-lg">👨‍👩‍👧‍👦🏦</span>
-        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">✍🏼Financa✍🏼 <span class="text-blue-500">Family</span></h2>
-        <p class="text-slate-500 text-[14px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
+        <span class="text-[80px] block mb-6 drop-shadow-lg">🧑🏽‍💼🏡👩🏻‍💼</span>
+        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">💰Buxheti💰 <span class="text-blue-500">Familjar</span></h2>
+        <p class="text-slate-500 text-[12px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
         <select id="user-select" class="w-full p-5 mb-4 rounded-2xl bg-slate-800 text-white border border-slate-700 outline-none text-center font-bold text-lg">
             <option disabled selected>Duke ngarkuar përdoruesit...</option>
         </select>
@@ -52,7 +52,7 @@
             <select id="muaji" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
             <select id="viti" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
         </div>
-        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">PDF</button>
+        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">Raporti Mujor</button>
     </div>
 
     <div class="p-6 bg-slate-900 rounded-[35px] mb-4 shadow-2xl text-center text-white relative">
@@ -89,31 +89,31 @@
     <div class="box mb-4 border-2 border-orange-400 bg-orange-50/5">
         <h3 class="text-[10px] font-black uppercase text-orange-600 mb-3 flex justify-between items-center">
             <span>🛒 Lista e Pazarit (Cloud)</span> 
-            <button onclick="pastroPazarin()" class="text-red-500 text-[9px] active-scale underline">Pastro</button>
+            <button onclick="pastroPazarin()" class="text-red-500 text-[9px] active-scale underline">Pastro listen</button>
         </h3>
         <div id="pazar-lista" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto mb-4 no-scrollbar"></div>
         <div class="flex gap-2">
             <button onclick="hapModalKategorite('pazar')" class="flex-1 p-3 bg-orange-600 text-white rounded-xl font-black text-[10px] uppercase shadow-md active-scale">
-                + Shto nga Lista
+                + Nga Kategorite
             </button>
-            <button onclick="shfaqManualPazar()" class="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-lg active-scale">📝</button>
+            <button onclick="shfaqManualPazar()" class="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-lg active-scale">Artikull📝</button>
         </div>
     </div>
 
     <div class="box mb-6 border-2 border-blue-600 shadow-xl text-center relative">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-[10px] font-black uppercase text-blue-600">💳 Arkëtim / Pagesë</h3>
-            <button onclick="pastroShporten()" class="text-red-500 text-xl active-scale">🗑️</button>
+            <button onclick="pastroShporten()" class="text-red-500 text-xl active-scale">Pastro🗑️</button>
         </div>
         <input id="shuma" type="number" placeholder="0 L" class="text-4xl font-black text-blue-600 bg-transparent border-none w-full text-center outline-none mb-2" readonly>
         <div id="shporta-list" class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl min-h-[40px] text-[11px] font-black text-slate-500 overflow-y-auto max-h-32 text-left space-y-1">Shporta është bosh...</div>
         
         <div class="grid grid-cols-2 gap-2 mt-3">
-            <button onclick="hapModalKategorite('arka')" class="p-3 bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 rounded-xl font-black uppercase text-[10px] border border-blue-200 dark:border-slate-600 active-scale">+ Nga Lista</button>
-            <button onclick="shtoManualNeArke()" class="p-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-black uppercase text-[10px] border border-slate-200 dark:border-slate-600 active-scale">📝 Manual</button>
+            <button onclick="hapModalKategorite('arka')" class="p-3 bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 rounded-xl font-black uppercase text-[10px] border border-blue-200 dark:border-slate-600 active-scale">+ Nga Kategoritë</button>
+            <button onclick="shtoManualNeArke()" class="p-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-black uppercase text-[10px] border border-slate-200 dark:border-slate-600 active-scale">📝 SHKRUAJ ARTIKULL</button>
         </div>
 
-        <button id="btn-ruaj" onclick="ruajShpenzim()" class="w-full mt-4 p-4 bg-blue-600 text-white rounded-2xl font-black uppercase active-scale shadow-lg">KRYEJ PAGESËN ✅</button>
+        <button id="btn-ruaj" onclick="ruajShpenzim()" class="w-full mt-4 p-4 bg-blue-600 text-white rounded-2xl font-black uppercase active-scale shadow-lg">RUAJ PAGESËN ✅</button>
     </div>
 
     <div class="box mb-4">
@@ -136,7 +136,7 @@
 
 <div id="modal-arka-manual" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-6 z-[300]">
     <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[35px] p-6 text-center shadow-2xl">
-        <h3 class="text-sm font-black mb-4 uppercase text-blue-600">Artikull Manual</h3>
+        <h3 class="text-sm font-black mb-4 uppercase text-blue-600">Shkruaj Artikull</h3>
         <input id="arka-emri-input" type="text" placeholder="Emri (psh: Bukë)" class="w-full p-4 mb-2 rounded-xl font-bold text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') document.getElementById('arka-shuma-input').focus()">
         <input id="arka-shuma-input" type="number" placeholder="Lekë" class="w-full p-4 mb-4 rounded-xl font-black text-2xl text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') kryejShtimManualArka()">
         <div class="flex gap-2">
