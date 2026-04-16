@@ -45,7 +45,7 @@
     <div class="flex justify-between items-center mb-4 gap-2">
         <button onclick="toggleDark()" class="p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl active-scale">🌓</button>
         
-        <div id="header-user" class="bg-blue-600 dark:bg-blue-800 text-white font-black text-[10px] px-3 py-2 rounded-xl uppercase flex items-center justify-center truncate max-w-[100px] shadow-md hidden">
+        <div id="header-user" class="bg-blue-600 text-white font-black text-[10px] px-3 py-2 rounded-xl uppercase flex items-center justify-center truncate max-w-[100px] shadow-md hidden">
             👤
         </div>
 
@@ -184,6 +184,7 @@
     const URL = "https://script.google.com/macros/s/AKfycbwWs6QK8PDVSzkUN8pHKoKDjqjO1mveykN9W3rb5faGC02F8QQ8VUtNAhrw5zE6Wbvm/exec"; 
 
     let uAktual = "", allData = {}, shportaObj = {}, historiData = [], pazarData = [], kategoriaAktuale = "", modalContext = "arka", globalRaport = {}; 
+    let prindiZgjedhur = ""; // Mban mend Kategorinë Kryesore (psh: Market)
 
     window.onload = async () => {
         const m = document.getElementById("muaji"), v = document.getElementById("viti");
@@ -227,7 +228,7 @@
         if(d.status == "ok") { 
             uAktual = u; 
             
-            // EMRI I PERDORUESIT
+            // Shfaqet emri lart
             const headerU = document.getElementById("header-user");
             headerU.innerText = "👤 " + u;
             headerU.classList.remove("hidden");
@@ -262,15 +263,19 @@
         btn.innerText = "SHTO"; btn.disabled = false;
     }
 
-    function shtoManualNeArke() { document.getElementById("modal-arka-manual").classList.remove("hidden"); }
+    function shtoManualNeArke() { 
+        prindiZgjedhur = ""; // Për siguri që mos ngatërrohet me kategorinë e fundit
+        document.getElementById("modal-arka-manual").classList.remove("hidden"); 
+    }
     function mbyllArkaManual() { document.getElementById("modal-arka-manual").classList.add("hidden"); }
     function kryejShtimManualArka() {
         const e = document.getElementById("arka-emri-input").value;
         const s = document.getElementById("arka-shuma-input").value;
         if(e && s && s > 0) { 
-            shtoNeShporte(e, s); 
+            shtoNeShporte(e, s, prindiZgjedhur); 
             document.getElementById("arka-emri-input").value = ""; 
             document.getElementById("arka-shuma-input").value = ""; 
+            prindiZgjedhur = ""; // Fshihet nga kujtesa
             mbyllArkaManual(); 
             showToast(`+ ${e} u shtua!`);
         }
@@ -286,11 +291,12 @@
         shfaqKategoriteModal();
     }
     function mbyllModalKategorite() { document.getElementById("modal-kategorite").classList.add("hidden"); }
+    
     function shfaqKategoriteModal() {
         document.getElementById("modal-kthehu-btn").classList.add("hidden");
         let h = "";
         allData.kats.forEach(k => {
-            let func = (k.kaNen === true || k.kaNen === "Po" || k.kaNen === "TRUE") ? `shfaqNenkategoriteModal('${k.emri}')` : `seleksionoArtikullModal('${k.emri}', 0)`;
+            let func = (k.kaNen === true || k.kaNen === "Po" || k.kaNen === "TRUE") ? `shfaqNenkategoriteModal('${k.emri}')` : `seleksionoArtikullModal('${k.emri}', 0, '${k.emri}')`;
             h += `<div class="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="${func}">
                     <span class="text-[10px] font-black uppercase text-center">${k.emri}</span>
                   </div>`;
@@ -303,29 +309,25 @@
         let h = "";
         allData.nenkats.forEach(n => {
             if(n.prindi == prindi) {
-                h += `<div class="p-4 ${modalContext === 'arka' ? 'bg-blue-50 border-blue-100 dark:bg-blue-900/10' : 'bg-orange-50 border-orange-100 dark:bg-orange-900/10'} rounded-2xl border flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="seleksionoArtikullModal('${n.emri}', ${n.cmimi || 0})">
+                h += `<div class="p-4 ${modalContext === 'arka' ? 'bg-blue-50 border-blue-100 dark:bg-blue-900/10' : 'bg-orange-50 border-orange-100 dark:bg-orange-900/10'} rounded-2xl border flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="seleksionoArtikullModal('${n.emri}', ${n.cmimi || 0}, '${prindi}')">
                         <span class="text-[10px] font-black uppercase text-center">${n.emri}</span>
                         ${n.cmimi > 0 ? `<span class="text-[9px] font-bold mt-1 opacity-60">${n.cmimi}L</span>` : ''}
                       </div>`;
             }
         });
         
-        // BUTONI I RI "TJETËR" NË NËNKATEGORI
-        h += `<div class="p-4 bg-slate-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 rounded-2xl border border-dashed flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="artikullIriNgaNenkategoria()">
+        // Butoni + TJETËR (Zgjidhja e problemit)
+        h += `<div class="p-4 bg-slate-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 rounded-2xl border border-dashed flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="artikullIriNgaNenkategoria('${prindi}')">
                 <span class="text-[10px] font-black uppercase text-center text-slate-500 dark:text-slate-400">+ TJETËR</span>
               </div>`;
               
         document.getElementById("modal-pads-container").innerHTML = h;
     }
 
-    // FUNKSIONI I BUTONIT "TJETËR"
-    function artikullIriNgaNenkategoria() {
+    function artikullIriNgaNenkategoria(prindi) {
+        prindiZgjedhur = prindi; // Mban mend Kategorinë Kryesore
         mbyllModalKategorite();
-        if(modalContext === 'arka') {
-            shtoManualNeArke(); 
-        } else {
-            shfaqManualPazar(); 
-        }
+        if(modalContext === 'arka') { shtoManualNeArke(); } else { shfaqManualPazar(); }
     }
 
     function kerkoArtikullModal() {
@@ -335,19 +337,21 @@
         let h = "";
         allData.nenkats.forEach(n => {
             if(n.emri.toLowerCase().includes(txt)) {
-                h += `<div class="p-4 ${modalContext === 'arka' ? 'bg-blue-50 border-blue-100 dark:bg-blue-900/10' : 'bg-orange-50 border-orange-100 dark:bg-orange-900/10'} rounded-2xl border flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="seleksionoArtikullModal('${n.emri}', ${n.cmimi || 0})">
+                h += `<div class="p-4 ${modalContext === 'arka' ? 'bg-blue-50 border-blue-100 dark:bg-blue-900/10' : 'bg-orange-50 border-orange-100 dark:bg-orange-900/10'} rounded-2xl border flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="seleksionoArtikullModal('${n.emri}', ${n.cmimi || 0}, '${n.prindi}')">
                         <span class="text-[10px] font-black uppercase text-center">${n.emri}</span>
                       </div>`;
             }
         });
         document.getElementById("modal-pads-container").innerHTML = h || `<div class="col-span-2 py-10 text-slate-400 text-xs italic">Nuk u gjet asgjë...</div>`;
     }
-    function seleksionoArtikullModal(emri, cmimi) {
+
+    function seleksionoArtikullModal(emri, cmimi, prindi) {
+        prindiZgjedhur = prindi || emri; // Ruan kategorinë prind
         if(modalContext === 'arka') {
-            if(cmimi > 0) { shtoNeShporte(emri, cmimi); showToast(`+ ${emri} shtuar!`); } 
-            else { shfaqModalManual(emri); }
+            if(cmimi > 0) { shtoNeShporte(emri, cmimi, prindiZgjedhur); showToast(`+ ${emri} shtuar!`); } 
+            else { shfaqModalManual(emri); } 
         } else {
-            shtoNePazarSpecifik(emri); showToast(`🛒 ${emri} në pazar!`);
+            shtoNePazarSpecifik(emri, prindiZgjedhur); showToast(`🛒 ${emri} në pazar!`);
         }
     }
 
@@ -383,9 +387,13 @@
     function ndryshoQellimin() { let t = prompt("Synimi i ri (Lekë):"); if(t){ localStorage.setItem("obj_vlera", t); perditesoKasaforten(); syncKursimToSheet(); }}
     function zeroKursimet() { if(confirm("Zero kursimin?")) { localStorage.setItem("kursime_mbledhura", 0); perditesoKasaforten(); syncKursimToSheet(); }}
 
-    function shtoNeShporte(e, c) {
-        if (shportaObj[e]) { shportaObj[e].s += 1; } 
-        else { shportaObj[e] = {s: 1, c: parseFloat(c)}; }
+    function shtoNeShporte(e, c, p = "") {
+        let prindKategori = p || prindiZgjedhur || e; // I lidh artikujt me Kategorinë Kryesore
+        if (shportaObj[e]) { 
+            shportaObj[e].s += 1; 
+        } else { 
+            shportaObj[e] = {s: 1, c: parseFloat(c), p: prindKategori}; 
+        }
         perditesoArken();
     }
     function hiqNgaShporta(e) {
@@ -410,8 +418,13 @@
         const btn = document.getElementById("btn-ruaj"); btn.innerText = "Duke u ruajtur..."; btn.disabled = true;
         let fatureTekst = "";
         for (let x in shportaObj) { fatureTekst += `${x} x${shportaObj[x].s} (${shportaObj[x].s * shportaObj[x].c}L)\n`; }
+        
+        // ZGJIDHJA ABSOLUTE E KATEGORISË
+        let firstItem = Object.keys(shportaObj)[0];
+        let kategoriaPerServer = shportaObj[firstItem].p || firstItem;
+
         try {
-            await fetch(URL, { method: "POST", body: JSON.stringify({ action: "shto", user: uAktual, kat: Object.keys(shportaObj)[0], shuma: v, shenime: fatureTekst.trim() }) });
+            await fetch(URL, { method: "POST", body: JSON.stringify({ action: "shto", user: uAktual, kat: kategoriaPerServer, shuma: v, shenime: fatureTekst.trim() }) });
             pastroShporten(); merrRaportin(); showToast("Pagesa u krye! ✅");
         } catch(e) { alert("Gabim!"); }
         btn.innerText = "KRYEJ PAGESËN ✅"; btn.disabled = false;
@@ -432,15 +445,35 @@
         }); 
         document.getElementById("pazar-lista").innerHTML = h;
     }
-    function shtoNePazarSpecifik(emri) { pazarData.push({emri: emri}); shfaqPazarin(); syncPazarCloud(); }
-    function shfaqManualPazar() { document.getElementById("modal-pazar-tekst").classList.remove("hidden"); }
+    function shtoNePazarSpecifik(emri, prindi = "") { 
+        let p = prindi || prindiZgjedhur || emri;
+        pazarData.push({emri: emri, prindi: p}); 
+        shfaqPazarin(); 
+        syncPazarCloud(); 
+    }
+    function shfaqManualPazar() { 
+        prindiZgjedhur = ""; 
+        document.getElementById("modal-pazar-tekst").classList.remove("hidden"); 
+    }
     function mbyllManualPazar() { document.getElementById("modal-pazar-tekst").classList.add("hidden"); }
     function shtoNePazarManual() { 
-        let i = document.getElementById("pazar-manual-input"); if(i.value) { shtoNePazarSpecifik(i.value); i.value = ""; mbyllManualPazar(); showToast("U shtua!"); } 
+        let i = document.getElementById("pazar-manual-input"); 
+        if(i.value) { 
+            shtoNePazarSpecifik(i.value, prindiZgjedhur); 
+            i.value = ""; 
+            prindiZgjedhur = ""; 
+            mbyllManualPazar(); 
+            showToast("U shtua!"); 
+        } 
     }
     function pazarTeArka(emri, index) {
         let c = prompt(`Çmimi për "${emri}":`);
-        if(c && !isNaN(c)) { shtoNeShporte(emri, c); pazarData.splice(index, 1); shfaqPazarin(); syncPazarCloud(); }
+        if(c && !isNaN(c)) { 
+            shtoNeShporte(emri, c, pazarData[index].prindi || emri); 
+            pazarData.splice(index, 1); 
+            shfaqPazarin(); 
+            syncPazarCloud(); 
+        }
     }
     function pastroPazarin() { if(confirm("Fshij gjithë listën?")) { pazarData = []; shfaqPazarin(); syncPazarCloud(); } }
 
@@ -450,7 +483,7 @@
         const d = await r.json(); globalRaport = d; historiData = d.lista;
         document.getElementById("r-mbetja").innerText = d.mbetja.toLocaleString() + " L";
         
-        // LIMITI U KTHYE EKZAKTESISHT SI NE V4.4
+        // LIMITI YT ORIGINAL, NUK ESHTE PREKUR!
         let totalLimit = 0; allData.kats.forEach(k => totalLimit += (parseFloat(k.limiti) || 0));
         let perq = totalLimit > 0 ? (d.dalje / totalLimit) * 100 : 0;
         document.getElementById("bar-limit").style.width = Math.min(perq, 100) + "%";
@@ -466,9 +499,10 @@
 
     function shfaqGrafikun(data) {
         let gD = [['Kategoria', 'Lekë']]; for(let k in data) gD.push([k, data[k]]);
+        // GRAFIKU YT ORIGINAL ME LEGJENDE DJATHTAS, NUK ESHTE PREKUR!
         new google.visualization.PieChart(document.getElementById('piechart')).draw(google.visualization.arrayToDataTable(gD), {
             backgroundColor: 'transparent', colors: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6'],
-            legend: { position: 'right', textStyle: { color: '#ffffff', fontSize: 10, bold: true } }, // LEGJENDA U KTHYE
+            legend: { position: 'right', textStyle: { color: '#ffffff', fontSize: 10, bold: true } }, 
             chartArea: {width:'100%', height:'100%'}, pieHole: 0.5
         });
     }
@@ -481,7 +515,11 @@
     function mbyllModalManual() { document.getElementById("modal-manual").classList.add("hidden"); }
     function mbyllModalManualDheShto() {
         let v = document.getElementById("manual-input").value;
-        if(v && v > 0) { shtoNeShporte(kategoriaAktuale, v); mbyllModalManual(); showToast(`+ ${kategoriaAktuale} shtuar!`); }
+        if(v && v > 0) { 
+            shtoNeShporte(kategoriaAktuale, v, prindiZgjedhur); 
+            mbyllModalManual(); 
+            showToast(`+ ${kategoriaAktuale} shtuar!`); 
+        }
     }
 
     function shkarkoPDF() {
