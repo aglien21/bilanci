@@ -181,21 +181,43 @@
     google.charts.load('current', {'packages':['corechart']});
     const URL = "https://script.google.com/macros/s/AKfycbwWs6QK8PDVSzkUN8pHKoKDjqjO1mveykN9W3rb5faGC02F8QQ8VUtNAhrw5zE6Wbvm/exec"; 
 
-    let uAktual = "", allData = {}, shportaObj = {}, historiData = [], pazarData = [], kategoriaAktuale = "", modalContext = "arka", globalRaport = {}; 
-
+    let uAktual = "", allData = {}, shportaObj = {}, historiData = [], pazarData = [], kategoriaAktuale = "", modalContext = "arka", 
     window.onload = async () => {
-        const m = document.getElementById("muaji"), v = document.getElementById("viti");
-        const muajt = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
-        muajt.forEach((emri, i) => { m.innerHTML += `<option value="${i+1}" ${i+1==new Date().getMonth()+1?'selected':''}>${emri}</option>`; });
-        for(let i=2025; i<=2027; i++) v.innerHTML += `<option value="${i}" ${i==2026?'selected':''}>${i}</option>`;
-        m.onchange = v.onchange = () => merrRaportin();
-        if(localStorage.getItem("dark-mode") === "true") document.body.classList.add("dark");
-        try {
-            const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "get_data" }) });
-            allData = await r.json();
-            allData.users.forEach(u => { document.getElementById("user-select").innerHTML += `<option value="${u}">${u}</option>`; });
-        } catch(e) {}
-    };
+    const m = document.getElementById("muaji"), v = document.getElementById("viti");
+    const uSelect = document.getElementById("user-select");
+    
+    // Vendosim një mesazh pritjeje te lista
+    uSelect.innerHTML = '<option disabled selected>Duke u ngarkuar përdoruesit...</option>';
+
+    const muajt = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
+    muajt.forEach((emri, i) => { m.innerHTML += `<option value="${i+1}" ${i+1==new Date().getMonth()+1?'selected':''}>${emri}</option>`; });
+    for(let i=2025; i<=2027; i++) v.innerHTML += `<option value="${i}" ${i==2026?'selected':''}>${i}</option>`;
+    
+    m.onchange = v.onchange = () => merrRaportin();
+    if(localStorage.getItem("dark-mode") === "true") document.body.classList.add("dark");
+
+    try {
+        const r = await fetch(URL, { 
+            method: "POST", 
+            mode: "cors", // Siguron që nuk bllokohet nga shfletuesi
+            body: JSON.stringify({ action: "get_data" }) 
+        });
+        
+        allData = await r.json();
+        
+        if(allData && allData.users) {
+            uSelect.innerHTML = ''; // Pastrojmë mesazhin "Duke u ngarkuar"
+            allData.users.forEach(u => { 
+                uSelect.innerHTML += `<option value="${u}">${u}</option>`; 
+            });
+        } else {
+            uSelect.innerHTML = '<option>Gabim: Nuk u gjetën përdorues</option>';
+        }
+    } catch(e) {
+        console.error("Gabimi te fetch:", e);
+        uSelect.innerHTML = '<option>Gabim Lidhjeje!</option>';
+    }
+};
 
     function showToast(msg) {
         const t = document.getElementById("toast");
