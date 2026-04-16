@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Financa Family Pro v4.7</title>
+    <title>Financa Family Pro v4.8</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -30,9 +30,9 @@
 
 <div id="login-ui" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-6 text-center">
     <div class="w-full max-w-sm p-10 rounded-[40px] bg-slate-900 border border-blue-500/20 shadow-2xl">
-        <span class="text-[80px] block mb-6 drop-shadow-lg">💑🏼</span>
-        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">💰Buxheti💰 <span class="text-red-500">Familjar</span></h2>
-        <p class="text-slate-500 text-[12px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
+        <span class="text-[80px] block mb-6 drop-shadow-lg">👨‍👩‍👧‍👦🏦</span>
+        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">✍🏼Financa✍🏼 <span class="text-blue-500">Family</span></h2>
+        <p class="text-slate-500 text-[14px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
         <select id="user-select" class="w-full p-5 mb-4 rounded-2xl bg-slate-800 text-white border border-slate-700 outline-none text-center font-bold text-lg">
             <option disabled selected>Duke ngarkuar përdoruesit...</option>
         </select>
@@ -45,15 +45,14 @@
     <div class="flex justify-between items-center mb-4 gap-2">
         <button onclick="toggleDark()" class="p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl active-scale">🌓</button>
         
-        <div id="header-user" class="bg-blue-600 text-white font-black text-[10px] px-3 py-2 rounded-xl uppercase flex items-center justify-center truncate max-w-[100px] shadow-md hidden">
-            👤
-        </div>
+        <select id="header-user-select" class="bg-blue-600 text-white font-black text-[10px] px-2 py-2 rounded-xl uppercase outline-none shadow-md hidden text-center cursor-pointer max-w-[120px] active-scale transition" onchange="merrRaportin()">
+            </select>
 
         <div class="flex gap-1 flex-1">
             <select id="muaji" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
             <select id="viti" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
         </div>
-        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">Raporti Mujor</button>
+        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">PDF</button>
     </div>
 
     <div class="p-6 bg-slate-900 rounded-[35px] mb-4 shadow-2xl text-center text-white relative">
@@ -181,7 +180,8 @@
 
 <script>
     google.charts.load('current', {'packages':['corechart']});
-    const URL = "https://script.google.com/macros/s/AKfycbwWs6QK8PDVSzkUN8pHKoKDjqjO1mveykN9W3rb5faGC02F8QQ8VUtNAhrw5zE6Wbvm/exec"; 
+    // VENDOS KETU LINKUN TEND TE RI
+    const URL = "https://script.google.com/macros/s/AKfycbyzawFXDnZxTAQm5SejKl46w8eRdHFwoumbiOvCHP4U62iPqKoAQv9_sf9YUdOszQy-/exec"; 
 
     let uAktual = "", allData = {}, shportaObj = {}, historiData = [], pazarData = [], kategoriaAktuale = "", modalContext = "arka", globalRaport = {}; 
     let prindiZgjedhur = ""; 
@@ -223,20 +223,34 @@
 
     document.getElementById("btn-login").onclick = async () => {
         const u = document.getElementById("user-select").value, p = document.getElementById("pass").value;
+        const btn = document.getElementById("btn-login");
+        btn.innerText = "Duke u lidhur...";
+        
         const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "login", user: u, pass: p }) });
         const d = await r.json();
+        
         if(d.status == "ok") { 
             uAktual = u; 
-            const headerU = document.getElementById("header-user");
-            headerU.innerText = "👤 " + u;
-            headerU.classList.remove("hidden");
+            
+            // Krijojme opsionet tek menuja lart
+            const usSelect = document.getElementById("header-user-select");
+            usSelect.innerHTML = `<option value="TOTALI">👨‍👩‍👧‍👦 TOTALI</option>`;
+            allData.users.forEach(user => {
+                usSelect.innerHTML += `<option value="${user}">👤 ${user}</option>`;
+            });
+            
+            usSelect.value = "TOTALI"; // By default te shohim te gjithe familjen
+            usSelect.classList.remove("hidden");
+            
             document.getElementById("login-ui").classList.add("hidden"); 
             document.getElementById("app-ui").classList.remove("hidden"); 
             merrRaportin(); fetchPazarCloud();
-        } else { alert("PIN i gabuar!"); }
+        } else { 
+            alert("PIN i gabuar!"); 
+            btn.innerText = "Hyni ne Sistem";
+        }
     };
 
-    // KËTU ËSHTË NDRYSHIMI PËR TASTIERËN (Fokusimi direkt)
     function hapModalFonde() {
         document.getElementById("fonde-shuma").value = "";
         document.getElementById("fonde-burimi").value = "";
@@ -486,7 +500,10 @@
 
     async function merrRaportin() {
         const m = document.getElementById("muaji").value, v = document.getElementById("viti").value;
-        const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "raporti", muaji: m, viti: v, user: uAktual }) });
+        // Lexojmë se kë pamje ka zgjedhur përdoruesi nga dropdown
+        const pamjaZgjedhur = document.getElementById("header-user-select").value || "TOTALI";
+        
+        const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "raporti", muaji: m, viti: v, user: uAktual, pamja_user: pamjaZgjedhur }) });
         const d = await r.json(); globalRaport = d; historiData = d.lista;
         document.getElementById("r-mbetja").innerText = d.mbetja.toLocaleString() + " L";
         
@@ -505,10 +522,14 @@
                                 </div>`;
             }
 
+            // Kemi shtuar dhe emrin e user-it te vogel prane kategorise qe te duket se kush e beri blerjen
+            let userBadge = pamjaZgjedhur === "TOTALI" ? `<span class="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 px-1 py-0.5 rounded text-[8px] ml-1">${x.u}</span>` : "";
+
             hHtml += `<div class="border-b dark:border-slate-700 py-4 flex flex-col">
                         <div class="flex justify-between items-center w-full mb-1">
                             <div>
                                 <span class="font-black text-[11px] uppercase">${x.k}</span>
+                                ${userBadge}
                                 <span class="text-[10px] text-slate-400 ml-2">${x.d}</span>
                             </div>
                             <span class="${x.t === 'hyrje' ? 'text-green-500' : 'text-red-500'} font-bold text-[12px]">
@@ -524,11 +545,15 @@
 
     function shfaqGrafikun(data) {
         let gD = [['Kategoria', 'Lekë']]; for(let k in data) gD.push([k, data[k]]);
-        new google.visualization.PieChart(document.getElementById('piechart')).draw(google.visualization.arrayToDataTable(gD), {
-            backgroundColor: 'transparent', colors: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6'],
-            legend: { position: 'right', textStyle: { color: '#ffffff', fontSize: 10, bold: true } }, 
-            chartArea: {width:'100%', height:'100%'}, pieHole: 0.5
-        });
+        if(gD.length > 1) {
+            new google.visualization.PieChart(document.getElementById('piechart')).draw(google.visualization.arrayToDataTable(gD), {
+                backgroundColor: 'transparent', colors: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6'],
+                legend: { position: 'right', textStyle: { color: '#ffffff', fontSize: 10, bold: true } }, 
+                chartArea: {width:'100%', height:'100%'}, pieHole: 0.5
+            });
+        } else {
+            document.getElementById('piechart').innerHTML = `<div class="flex items-center justify-center h-full text-slate-400 italic text-xs">Nuk ka të dhëna...</div>`;
+        }
     }
 
     function shfaqModalManual(emri) {
@@ -552,6 +577,9 @@
         const muajt = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
         const muajiEmri = muajt[document.getElementById("muaji").value - 1];
         const viti = document.getElementById("viti").value;
+        
+        let docUserTitle = document.getElementById("header-user-select").value;
+        if(docUserTitle === "TOTALI") docUserTitle = "FAMILJA (TOTAL)";
 
         doc.setFillColor(15, 23, 42); 
         doc.rect(0, 0, 210, 45, 'F');
@@ -564,7 +592,7 @@
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
         doc.text(`PERIUDHA: ${muajiEmri} ${viti}`, 14, 28);
-        doc.text(`PERDORUESI: ${uAktual.toUpperCase()}`, 14, 34);
+        doc.text(`PERDORUESI: ${docUserTitle.toUpperCase()}`, 14, 34);
 
         doc.setFillColor(248, 250, 252); 
         doc.roundedRect(14, 50, 182, 35, 3, 3, 'F');
@@ -592,19 +620,20 @@
 
         const rreshtat = historiData.map(x => [
             x.d, 
+            x.u, // Shtuar user-i në tabelë
             x.k, 
             x.n ? x.n.replace(/\n/g, ", ") : "---", 
             (x.t=="hyrje"?"+":"-")+Math.abs(x.s).toLocaleString()+" L"
         ]);
 
         doc.autoTable({
-            head: [['Data', 'Kategoria', 'Pershkrimi', 'Shuma']],
+            head: [['Data', 'Kush', 'Kategoria', 'Pershkrimi', 'Shuma']],
             body: rreshtat,
             startY: 105,
             theme: 'striped',
             headStyles: { fillColor: [59, 130, 246], fontSize: 10 },
-            styles: { fontSize: 9 },
-            columnStyles: { 3: { halign: 'right', fontStyle: 'bold' } }
+            styles: { fontSize: 8 },
+            columnStyles: { 4: { halign: 'right', fontStyle: 'bold' } }
         });
 
         const finalY = doc.lastAutoTable.finalY + 10;
@@ -612,7 +641,7 @@
         doc.setTextColor(150);
         doc.text("Gjeneruar automatikisht nga Financa Family App", 14, finalY);
 
-        doc.save(`Bilanci_${uAktual}_${muajiEmri}_${viti}.pdf`);
+        doc.save(`Bilanci_${docUserTitle}_${muajiEmri}_${viti}.pdf`);
     }
 </script>
 </body>
