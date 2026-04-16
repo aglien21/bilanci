@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Financa Family Pro v4.5</title>
+    <title>Financa Family Pro v4.6</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -184,7 +184,7 @@
     const URL = "https://script.google.com/macros/s/AKfycbwWs6QK8PDVSzkUN8pHKoKDjqjO1mveykN9W3rb5faGC02F8QQ8VUtNAhrw5zE6Wbvm/exec"; 
 
     let uAktual = "", allData = {}, shportaObj = {}, historiData = [], pazarData = [], kategoriaAktuale = "", modalContext = "arka", globalRaport = {}; 
-    let prindiZgjedhur = ""; // Mban mend Kategorinë Kryesore (psh: Market)
+    let prindiZgjedhur = ""; 
 
     window.onload = async () => {
         const m = document.getElementById("muaji"), v = document.getElementById("viti");
@@ -227,12 +227,9 @@
         const d = await r.json();
         if(d.status == "ok") { 
             uAktual = u; 
-            
-            // Shfaqet emri lart
             const headerU = document.getElementById("header-user");
             headerU.innerText = "👤 " + u;
             headerU.classList.remove("hidden");
-
             document.getElementById("login-ui").classList.add("hidden"); 
             document.getElementById("app-ui").classList.remove("hidden"); 
             merrRaportin(); fetchPazarCloud();
@@ -263,8 +260,9 @@
         btn.innerText = "SHTO"; btn.disabled = false;
     }
 
+    // Sigurohemi që nëse shtypet "📝 Manual" nga jashtë, kategoria të fshihet
     function shtoManualNeArke() { 
-        prindiZgjedhur = ""; // Për siguri që mos ngatërrohet me kategorinë e fundit
+        prindiZgjedhur = ""; 
         document.getElementById("modal-arka-manual").classList.remove("hidden"); 
     }
     function mbyllArkaManual() { document.getElementById("modal-arka-manual").classList.add("hidden"); }
@@ -275,13 +273,14 @@
             shtoNeShporte(e, s, prindiZgjedhur); 
             document.getElementById("arka-emri-input").value = ""; 
             document.getElementById("arka-shuma-input").value = ""; 
-            prindiZgjedhur = ""; // Fshihet nga kujtesa
+            prindiZgjedhur = ""; 
             mbyllArkaManual(); 
             showToast(`+ ${e} u shtua!`);
         }
     }
 
     function hapModalKategorite(context) {
+        prindiZgjedhur = ""; // Fshijmë memorien sa herë hapim listën e kategorive
         modalContext = context;
         document.getElementById("modal-kategorite").classList.remove("hidden");
         document.getElementById("modal-search").value = "";
@@ -316,7 +315,6 @@
             }
         });
         
-        // Butoni + TJETËR (Zgjidhja e problemit)
         h += `<div class="p-4 bg-slate-100 border-slate-300 dark:bg-slate-800 dark:border-slate-600 rounded-2xl border border-dashed flex flex-col items-center justify-center cursor-pointer active-scale transition" onclick="artikullIriNgaNenkategoria('${prindi}')">
                 <span class="text-[10px] font-black uppercase text-center text-slate-500 dark:text-slate-400">+ TJETËR</span>
               </div>`;
@@ -324,10 +322,15 @@
         document.getElementById("modal-pads-container").innerHTML = h;
     }
 
+    // KETU ISHTE GABIMI! Tani hapim drejtpërdrejt modalet pa thirrur funksionet që e fshijnë memorien
     function artikullIriNgaNenkategoria(prindi) {
-        prindiZgjedhur = prindi; // Mban mend Kategorinë Kryesore
+        prindiZgjedhur = prindi; 
         mbyllModalKategorite();
-        if(modalContext === 'arka') { shtoManualNeArke(); } else { shfaqManualPazar(); }
+        if(modalContext === 'arka') { 
+            document.getElementById("modal-arka-manual").classList.remove("hidden");
+        } else { 
+            document.getElementById("modal-pazar-tekst").classList.remove("hidden");
+        }
     }
 
     function kerkoArtikullModal() {
@@ -346,7 +349,7 @@
     }
 
     function seleksionoArtikullModal(emri, cmimi, prindi) {
-        prindiZgjedhur = prindi || emri; // Ruan kategorinë prind
+        prindiZgjedhur = prindi || emri; 
         if(modalContext === 'arka') {
             if(cmimi > 0) { shtoNeShporte(emri, cmimi, prindiZgjedhur); showToast(`+ ${emri} shtuar!`); } 
             else { shfaqModalManual(emri); } 
@@ -388,7 +391,7 @@
     function zeroKursimet() { if(confirm("Zero kursimin?")) { localStorage.setItem("kursime_mbledhura", 0); perditesoKasaforten(); syncKursimToSheet(); }}
 
     function shtoNeShporte(e, c, p = "") {
-        let prindKategori = p || prindiZgjedhur || e; // I lidh artikujt me Kategorinë Kryesore
+        let prindKategori = p || prindiZgjedhur || e; 
         if (shportaObj[e]) { 
             shportaObj[e].s += 1; 
         } else { 
@@ -419,7 +422,6 @@
         let fatureTekst = "";
         for (let x in shportaObj) { fatureTekst += `${x} x${shportaObj[x].s} (${shportaObj[x].s * shportaObj[x].c}L)\n`; }
         
-        // ZGJIDHJA ABSOLUTE E KATEGORISË
         let firstItem = Object.keys(shportaObj)[0];
         let kategoriaPerServer = shportaObj[firstItem].p || firstItem;
 
@@ -483,7 +485,6 @@
         const d = await r.json(); globalRaport = d; historiData = d.lista;
         document.getElementById("r-mbetja").innerText = d.mbetja.toLocaleString() + " L";
         
-        // LIMITI YT ORIGINAL, NUK ESHTE PREKUR!
         let totalLimit = 0; allData.kats.forEach(k => totalLimit += (parseFloat(k.limiti) || 0));
         let perq = totalLimit > 0 ? (d.dalje / totalLimit) * 100 : 0;
         document.getElementById("bar-limit").style.width = Math.min(perq, 100) + "%";
@@ -491,7 +492,27 @@
         
         let hHtml = ""; 
         d.lista.slice(0, 15).forEach(x => {
-            hHtml += `<div class="border-b dark:border-slate-700 py-3 flex justify-between"><div><span class="font-black text-[10px] uppercase">${x.k}</span><span class="text-[9px] text-slate-400 ml-2">${x.d}</span>${x.n ? `<div class="text-[9px] text-slate-400 mt-1 italic">${x.n.replace(/\n/g, ", ")}</div>` : ''}</div><span class="${x.t === 'hyrje' ? 'text-green-500' : 'text-red-400'} font-bold">${x.t === 'hyrje' ? '+' : '-'}${Math.abs(x.s).toLocaleString()} L</span></div>`;
+            let fatureDetaje = "";
+            // NGJYRAT E REJA TE FATURES KETU: Te qarta, moderne, kontrast i larte.
+            if(x.n) {
+                let detajet = x.n.trim().replace(/\n/g, "<br>");
+                fatureDetaje = `<div class="mt-3 p-3 bg-white dark:bg-slate-800 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                                    <div class="text-[11px] text-slate-700 dark:text-slate-200 font-mono leading-relaxed w-full">${detajet}</div>
+                                </div>`;
+            }
+
+            hHtml += `<div class="border-b dark:border-slate-700 py-4 flex flex-col">
+                        <div class="flex justify-between items-center w-full mb-1">
+                            <div>
+                                <span class="font-black text-[11px] uppercase">${x.k}</span>
+                                <span class="text-[10px] text-slate-400 ml-2">${x.d}</span>
+                            </div>
+                            <span class="${x.t === 'hyrje' ? 'text-green-500' : 'text-red-500'} font-bold text-[12px]">
+                                ${x.t === 'hyrje' ? '+' : '-'}${Math.abs(x.s).toLocaleString()} L
+                            </span>
+                        </div>
+                        ${fatureDetaje}
+                      </div>`;
         });
         document.getElementById("historiku-list").innerHTML = hHtml;
         initKursimet(d.kurs); shfaqGrafikun(d.grafiku);
@@ -499,7 +520,6 @@
 
     function shfaqGrafikun(data) {
         let gD = [['Kategoria', 'Lekë']]; for(let k in data) gD.push([k, data[k]]);
-        // GRAFIKU YT ORIGINAL ME LEGJENDE DJATHTAS, NUK ESHTE PREKUR!
         new google.visualization.PieChart(document.getElementById('piechart')).draw(google.visualization.arrayToDataTable(gD), {
             backgroundColor: 'transparent', colors: ['#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6'],
             legend: { position: 'right', textStyle: { color: '#ffffff', fontSize: 10, bold: true } }, 
