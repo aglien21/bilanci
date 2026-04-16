@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Financa Family Pro v4.6</title>
+    <title>Financa Family Pro v4.7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -29,15 +29,15 @@
 <div id="toast">Veprimi u krye! ✅</div>
 
 <div id="login-ui" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-6 text-center">
-    <div class="w-full max-w-xs p-8 rounded-[40px] bg-slate-900 border border-blue-500/20 shadow-2xl">
-        <span class="text-7xl block mb-4">👫🏠👫</span>
+    <div class="w-full max-w-sm p-10 rounded-[40px] bg-slate-900 border border-blue-500/20 shadow-2xl">
+        <span class="text-[80px] block mb-6 drop-shadow-lg">👨‍👩‍👧‍👦🏦</span>
         <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">✍🏼Financa✍🏼 <span class="text-blue-500">Family</span></h2>
-        <p class="text-slate-500 text-[12px] tracking-[2px] font-bold mb-8">Created By AGLIEN</p>
-        <select id="user-select" class="w-full p-4 mb-3 rounded-2xl bg-slate-800 text-white border border-slate-700 outline-none text-center font-bold">
+        <p class="text-slate-500 text-[14px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
+        <select id="user-select" class="w-full p-5 mb-4 rounded-2xl bg-slate-800 text-white border border-slate-700 outline-none text-center font-bold text-lg">
             <option disabled selected>Duke ngarkuar përdoruesit...</option>
         </select>
-        <input id="pass" type="password" placeholder="PIN" class="w-full p-4 mb-8 rounded-2xl text-center text-xl font-black bg-white outline-none" inputmode="numeric">
-        <button id="btn-login" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-black uppercase shadow-lg">Hyni ne Sistem</button>
+        <input id="pass" type="password" placeholder="PIN" class="w-full p-5 mb-8 rounded-2xl text-center text-2xl font-black bg-white outline-none" inputmode="numeric" onkeydown="if(event.key === 'Enter') document.getElementById('btn-login').click()">
+        <button id="btn-login" class="w-full p-6 bg-blue-600 text-white rounded-2xl font-black uppercase text-lg shadow-lg">Hyni ne Sistem</button>
     </div>
 </div>
 
@@ -53,7 +53,7 @@
             <select id="muaji" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
             <select id="viti" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
         </div>
-        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">Raporti mujor</button>
+        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">PDF</button>
     </div>
 
     <div class="p-6 bg-slate-900 rounded-[35px] mb-4 shadow-2xl text-center text-white relative">
@@ -71,7 +71,7 @@
 
     <div class="box mb-4 bg-gradient-to-br from-indigo-700 to-blue-900 text-white border-none shadow-xl">
         <div class="flex justify-between items-center mb-2 italic px-1">
-            <input id="obj-emri" class="bg-transparent border-none text-xs font-bold text-white outline-none w-1/2" onchange="syncKursimToSheet()" placeholder="Emri i kursimit">
+            <input id="obj-emri" class="bg-transparent border-none text-xs font-bold text-white outline-none w-1/2" onchange="syncKursimToSheet()" placeholder="Emri i kursimit" onkeydown="if(event.key==='Enter') this.blur()">
             <span id="obj-perq" class="text-[10px] font-black bg-white/20 px-2 py-1 rounded-md">0%</span>
         </div>
         <div class="w-full bg-black/20 rounded-full h-1.5 mb-3">
@@ -126,8 +126,8 @@
 <div id="modal-fonde" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-6 z-[300]">
     <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[35px] p-6 text-center shadow-2xl">
         <h3 class="text-sm font-black mb-4 uppercase text-green-600">Shto Të Ardhura</h3>
-        <input id="fonde-shuma" type="number" placeholder="Shuma (Lekë)" class="w-full p-4 mb-2 rounded-xl font-black text-2xl text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700">
-        <input id="fonde-burimi" type="text" placeholder="Burimi (psh: Paga)" class="w-full p-4 mb-4 rounded-xl font-bold text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700">
+        <input id="fonde-shuma" type="number" placeholder="Shuma (Lekë)" class="w-full p-4 mb-2 rounded-xl font-black text-2xl text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') document.getElementById('fonde-burimi').focus()">
+        <input id="fonde-burimi" type="text" placeholder="Burimi (psh: Paga)" class="w-full p-4 mb-4 rounded-xl font-bold text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') ruajFonde()">
         <div class="flex gap-2">
             <button onclick="mbyllModalFonde()" class="w-1/4 p-4 bg-slate-100 dark:bg-slate-700 rounded-2xl font-black italic dark:text-white">X</button>
             <button id="btn-ruaj-fonde" onclick="ruajFonde()" class="w-3/4 p-4 bg-green-600 text-white rounded-2xl font-black uppercase">SHTO</button>
@@ -138,8 +138,8 @@
 <div id="modal-arka-manual" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-6 z-[300]">
     <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[35px] p-6 text-center shadow-2xl">
         <h3 class="text-sm font-black mb-4 uppercase text-blue-600">Artikull Manual</h3>
-        <input id="arka-emri-input" type="text" placeholder="Emri (psh: Bukë)" class="w-full p-4 mb-2 rounded-xl font-bold text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700">
-        <input id="arka-shuma-input" type="number" placeholder="Lekë" class="w-full p-4 mb-4 rounded-xl font-black text-2xl text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700">
+        <input id="arka-emri-input" type="text" placeholder="Emri (psh: Bukë)" class="w-full p-4 mb-2 rounded-xl font-bold text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') document.getElementById('arka-shuma-input').focus()">
+        <input id="arka-shuma-input" type="number" placeholder="Lekë" class="w-full p-4 mb-4 rounded-xl font-black text-2xl text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') kryejShtimManualArka()">
         <div class="flex gap-2">
             <button onclick="mbyllArkaManual()" class="w-1/4 p-4 bg-slate-100 dark:bg-slate-700 rounded-2xl font-black italic dark:text-white">X</button>
             <button onclick="kryejShtimManualArka()" class="w-3/4 p-4 bg-blue-600 text-white rounded-2xl font-black uppercase">SHTO</button>
@@ -160,7 +160,7 @@
 <div id="modal-manual" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center p-6 z-[400]">
     <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[35px] p-6 text-center shadow-2xl">
         <h3 id="manual-titulli" class="text-sm font-black mb-4 uppercase text-blue-600">Vendos Shumën</h3>
-        <input id="manual-input" type="number" class="w-full p-5 mb-4 rounded-2xl font-black text-4xl text-center border-2 border-blue-200 outline-none dark:bg-slate-900 dark:text-white" inputmode="decimal">
+        <input id="manual-input" type="number" class="w-full p-5 mb-4 rounded-2xl font-black text-4xl text-center border-2 border-blue-200 outline-none dark:bg-slate-900 dark:text-white" inputmode="decimal" onkeydown="if(event.key === 'Enter') mbyllModalManualDheShto()">
         <div class="flex gap-2">
             <button onclick="mbyllModalManual()" class="w-1/4 p-4 bg-slate-100 dark:bg-slate-700 rounded-2xl font-black italic dark:text-white">X</button>
             <button onclick="mbyllModalManualDheShto()" class="w-3/4 p-4 bg-blue-600 text-white rounded-2xl font-black uppercase">SHTO</button>
@@ -171,7 +171,7 @@
 <div id="modal-pazar-tekst" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-6 z-[300]">
     <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[35px] p-6 text-center">
         <h3 class="text-sm font-black mb-4 uppercase text-orange-600">Shto Shënim Manual</h3>
-        <input id="pazar-manual-input" type="text" placeholder="Psh: Bukë..." class="w-full p-4 mb-4 rounded-2xl font-bold text-center border-2 border-slate-200 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700">
+        <input id="pazar-manual-input" type="text" placeholder="Psh: Bukë..." class="w-full p-4 mb-4 rounded-2xl font-bold text-center border-2 border-slate-200 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') shtoNePazarManual()">
         <div class="flex gap-2">
             <button onclick="mbyllManualPazar()" class="w-1/4 p-4 bg-slate-100 dark:bg-slate-700 rounded-2xl font-black italic dark:text-white">X</button>
             <button onclick="shtoNePazarManual()" class="w-3/4 p-4 bg-orange-600 text-white rounded-2xl font-black uppercase">SHTO</button>
@@ -240,6 +240,7 @@
         document.getElementById("fonde-shuma").value = "";
         document.getElementById("fonde-burimi").value = "";
         document.getElementById("modal-fonde").classList.remove("hidden");
+        setTimeout(() => document.getElementById("fonde-shuma").focus(), 150); // Auto-fokus
     }
     function mbyllModalFonde() { document.getElementById("modal-fonde").classList.add("hidden"); }
 
@@ -260,10 +261,10 @@
         btn.innerText = "SHTO"; btn.disabled = false;
     }
 
-    // Sigurohemi që nëse shtypet "📝 Manual" nga jashtë, kategoria të fshihet
     function shtoManualNeArke() { 
         prindiZgjedhur = ""; 
         document.getElementById("modal-arka-manual").classList.remove("hidden"); 
+        setTimeout(() => document.getElementById("arka-emri-input").focus(), 150); // Auto-fokus
     }
     function mbyllArkaManual() { document.getElementById("modal-arka-manual").classList.add("hidden"); }
     function kryejShtimManualArka() {
@@ -280,7 +281,7 @@
     }
 
     function hapModalKategorite(context) {
-        prindiZgjedhur = ""; // Fshijmë memorien sa herë hapim listën e kategorive
+        prindiZgjedhur = ""; 
         modalContext = context;
         document.getElementById("modal-kategorite").classList.remove("hidden");
         document.getElementById("modal-search").value = "";
@@ -288,6 +289,7 @@
         titulli.innerText = (context === 'arka') ? "Shto në Arkë" : "Shto në Pazar";
         titulli.className = (context === 'arka') ? "text-sm font-black mb-4 uppercase text-blue-600" : "text-sm font-black mb-4 uppercase text-orange-600";
         shfaqKategoriteModal();
+        setTimeout(() => document.getElementById("modal-search").focus(), 150); // Auto-fokus
     }
     function mbyllModalKategorite() { document.getElementById("modal-kategorite").classList.add("hidden"); }
     
@@ -322,14 +324,15 @@
         document.getElementById("modal-pads-container").innerHTML = h;
     }
 
-    // KETU ISHTE GABIMI! Tani hapim drejtpërdrejt modalet pa thirrur funksionet që e fshijnë memorien
     function artikullIriNgaNenkategoria(prindi) {
         prindiZgjedhur = prindi; 
         mbyllModalKategorite();
         if(modalContext === 'arka') { 
             document.getElementById("modal-arka-manual").classList.remove("hidden");
+            setTimeout(() => document.getElementById("arka-emri-input").focus(), 150); // Auto-fokus
         } else { 
             document.getElementById("modal-pazar-tekst").classList.remove("hidden");
+            setTimeout(() => document.getElementById("pazar-manual-input").focus(), 150); // Auto-fokus
         }
     }
 
@@ -456,6 +459,7 @@
     function shfaqManualPazar() { 
         prindiZgjedhur = ""; 
         document.getElementById("modal-pazar-tekst").classList.remove("hidden"); 
+        setTimeout(() => document.getElementById("pazar-manual-input").focus(), 150); // Auto-fokus
     }
     function mbyllManualPazar() { document.getElementById("modal-pazar-tekst").classList.add("hidden"); }
     function shtoNePazarManual() { 
@@ -493,7 +497,6 @@
         let hHtml = ""; 
         d.lista.slice(0, 15).forEach(x => {
             let fatureDetaje = "";
-            // NGJYRAT E REJA TE FATURES KETU: Te qarta, moderne, kontrast i larte.
             if(x.n) {
                 let detajet = x.n.trim().replace(/\n/g, "<br>");
                 fatureDetaje = `<div class="mt-3 p-3 bg-white dark:bg-slate-800 rounded-xl border-l-4 border-blue-500 shadow-sm">
@@ -530,7 +533,7 @@
     function shfaqModalManual(emri) {
         kategoriaAktuale = emri; document.getElementById("manual-titulli").innerText = "Shuma: " + emri;
         document.getElementById("manual-input").value = ""; document.getElementById("modal-manual").classList.remove("hidden");
-        setTimeout(() => document.getElementById("manual-input").focus(), 200);
+        setTimeout(() => document.getElementById("manual-input").focus(), 150); // Auto-fokus
     }
     function mbyllModalManual() { document.getElementById("modal-manual").classList.add("hidden"); }
     function mbyllModalManualDheShto() {
