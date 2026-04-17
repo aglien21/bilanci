@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="sq">
 <head>
-    <link rel="apple-touch-icon" href="apple-touch-icon.PNG">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Financa Family Pro v4.8</title>
+    <title>Financa Family Pro v4.9</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -31,9 +30,9 @@
 
 <div id="login-ui" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-6 text-center">
     <div class="w-full max-w-sm p-10 rounded-[40px] bg-slate-900 border border-blue-500/20 shadow-2xl">
-        <span class="text-[80px] block mb-6 drop-shadow-lg">🧑🏽‍💼🏡👩🏻‍💼</span>
-        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">💰Buxheti💰 <span class="text-blue-500">Familjar</span></h2>
-        <p class="text-slate-500 text-[12px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
+        <span class="text-[80px] block mb-6 drop-shadow-lg">👨‍👩‍👧‍👦🏦</span>
+        <h2 class="text-white text-3xl font-black mb-2 uppercase tracking-tighter">✍🏼Financa✍🏼 <span class="text-blue-500">Family</span></h2>
+        <p class="text-slate-500 text-[14px] tracking-[2px] font-bold mb-10">Created By AGLIEN</p>
         <select id="user-select" class="w-full p-5 mb-4 rounded-2xl bg-slate-800 text-white border border-slate-700 outline-none text-center font-bold text-lg">
             <option disabled selected>Duke ngarkuar përdoruesit...</option>
         </select>
@@ -47,13 +46,13 @@
         <button onclick="toggleDark()" class="p-3 bg-slate-200 dark:bg-slate-800 rounded-2xl active-scale">🌓</button>
         
         <select id="header-user-select" class="bg-blue-600 text-white font-black text-[10px] px-2 py-2 rounded-xl uppercase outline-none shadow-md hidden text-center cursor-pointer max-w-[120px] active-scale transition" onchange="merrRaportin()">
-            </select>
+        </select>
 
         <div class="flex gap-1 flex-1">
             <select id="muaji" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
             <select id="viti" class="p-2 bg-white dark:bg-slate-800 rounded-xl text-[10px] font-bold outline-none flex-1 border border-slate-200 dark:border-slate-700"></select>
         </div>
-        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">Raporti Mujor</button>
+        <button onclick="shkarkoPDF()" class="p-3 bg-red-600 text-white rounded-2xl font-black text-[10px] active-scale">PDF</button>
     </div>
 
     <div class="p-6 bg-slate-900 rounded-[35px] mb-4 shadow-2xl text-center text-white relative">
@@ -90,31 +89,31 @@
     <div class="box mb-4 border-2 border-orange-400 bg-orange-50/5">
         <h3 class="text-[10px] font-black uppercase text-orange-600 mb-3 flex justify-between items-center">
             <span>🛒 Lista e Pazarit (Cloud)</span> 
-            <button onclick="pastroPazarin()" class="text-red-500 text-[9px] active-scale underline">Pastro listen</button>
+            <button onclick="pastroPazarin()" class="text-red-500 text-[9px] active-scale underline">Pastro</button>
         </h3>
         <div id="pazar-lista" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto mb-4 no-scrollbar"></div>
         <div class="flex gap-2">
             <button onclick="hapModalKategorite('pazar')" class="flex-1 p-3 bg-orange-600 text-white rounded-xl font-black text-[10px] uppercase shadow-md active-scale">
-                + Nga Kategorite
+                + Shto nga Lista
             </button>
-            <button onclick="shfaqManualPazar()" class="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-lg active-scale">Artikull📝</button>
+            <button onclick="shfaqManualPazar()" class="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-lg active-scale">📝</button>
         </div>
     </div>
 
     <div class="box mb-6 border-2 border-blue-600 shadow-xl text-center relative">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-[10px] font-black uppercase text-blue-600">💳 Arkëtim / Pagesë</h3>
-            <button onclick="pastroShporten()" class="text-red-500 text-xl active-scale">Pastro🗑️</button>
+            <button onclick="pastroShporten()" class="text-red-500 text-xl active-scale">🗑️</button>
         </div>
         <input id="shuma" type="number" placeholder="0 L" class="text-4xl font-black text-blue-600 bg-transparent border-none w-full text-center outline-none mb-2" readonly>
         <div id="shporta-list" class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl min-h-[40px] text-[11px] font-black text-slate-500 overflow-y-auto max-h-32 text-left space-y-1">Shporta është bosh...</div>
         
         <div class="grid grid-cols-2 gap-2 mt-3">
-            <button onclick="hapModalKategorite('arka')" class="p-3 bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 rounded-xl font-black uppercase text-[10px] border border-blue-200 dark:border-slate-600 active-scale">+ Nga Kategoritë</button>
-            <button onclick="shtoManualNeArke()" class="p-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-black uppercase text-[10px] border border-slate-200 dark:border-slate-600 active-scale">📝 SHKRUAJ ARTIKULL</button>
+            <button onclick="hapModalKategorite('arka')" class="p-3 bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-blue-300 rounded-xl font-black uppercase text-[10px] border border-blue-200 dark:border-slate-600 active-scale">+ Nga Lista</button>
+            <button onclick="shtoManualNeArke()" class="p-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-black uppercase text-[10px] border border-slate-200 dark:border-slate-600 active-scale">📝 Manual</button>
         </div>
 
-        <button id="btn-ruaj" onclick="ruajShpenzim()" class="w-full mt-4 p-4 bg-blue-600 text-white rounded-2xl font-black uppercase active-scale shadow-lg">RUAJ PAGESËN ✅</button>
+        <button id="btn-ruaj" onclick="ruajShpenzim()" class="w-full mt-4 p-4 bg-blue-600 text-white rounded-2xl font-black uppercase active-scale shadow-lg">KRYEJ PAGESËN ✅</button>
     </div>
 
     <div class="box mb-4">
@@ -137,7 +136,7 @@
 
 <div id="modal-arka-manual" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-6 z-[300]">
     <div class="bg-white dark:bg-slate-800 w-full max-w-xs rounded-[35px] p-6 text-center shadow-2xl">
-        <h3 class="text-sm font-black mb-4 uppercase text-blue-600">Shkruaj Artikull</h3>
+        <h3 class="text-sm font-black mb-4 uppercase text-blue-600">Artikull Manual</h3>
         <input id="arka-emri-input" type="text" placeholder="Emri (psh: Bukë)" class="w-full p-4 mb-2 rounded-xl font-bold text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') document.getElementById('arka-shuma-input').focus()">
         <input id="arka-shuma-input" type="number" placeholder="Lekë" class="w-full p-4 mb-4 rounded-xl font-black text-2xl text-center border-2 border-slate-100 outline-none dark:bg-slate-900 dark:text-white dark:border-slate-700" onkeydown="if(event.key === 'Enter') kryejShtimManualArka()">
         <div class="flex gap-2">
@@ -181,11 +180,33 @@
 
 <script>
     google.charts.load('current', {'packages':['corechart']});
-    // VENDOS KETU LINKUN TEND TE RI
+    
+    // --> VENDOS KETU LINKUN TEND TE RI NGA DEPLOYMENT <--
     const URL = "https://script.google.com/macros/s/AKfycbyzawFXDnZxTAQm5SejKl46w8eRdHFwoumbiOvCHP4U62iPqKoAQv9_sf9YUdOszQy-/exec"; 
 
     let uAktual = "", allData = {}, shportaObj = {}, historiData = [], pazarData = [], kategoriaAktuale = "", modalContext = "arka", globalRaport = {}; 
     let prindiZgjedhur = ""; 
+
+    // --- ZGJIDHJA MAGJIKE: Motori i Auto-Retry qe garanton qe lidhja nuk deshton kurre ---
+    async function dargoNeServer(dataObj, retries = 2) {
+        let gabimiFundit;
+        for (let i = 0; i <= retries; i++) {
+            try {
+                let res = await fetch(URL, { 
+                    method: "POST", 
+                    redirect: "follow", // Shmang bllokimet ne mobile
+                    body: JSON.stringify(dataObj) 
+                });
+                return await res.json();
+            } catch (err) {
+                gabimiFundit = err;
+                console.warn(`Tentativa ${i+1} dështoi. Po provoj përsëri në sfond...`);
+                if (i < retries) await new Promise(r => setTimeout(r, 600)); // Pret 0.6 sekonda para se te provoje prap
+            }
+        }
+        throw gabimiFundit;
+    }
+    // -------------------------------------------------------------------------------------
 
     window.onload = async () => {
         const m = document.getElementById("muaji"), v = document.getElementById("viti");
@@ -199,8 +220,7 @@
         if(localStorage.getItem("dark-mode") === "true") document.body.classList.add("dark");
 
         try {
-            const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "get_data" }) });
-            allData = await r.json();
+            allData = await dargoNeServer({ action: "get_data" });
             if(allData && allData.users) {
                 uSelect.innerHTML = "";
                 allData.users.forEach(u => { uSelect.innerHTML += `<option value="${u}">${u}</option>`; });
@@ -227,27 +247,28 @@
         const btn = document.getElementById("btn-login");
         btn.innerText = "Duke u lidhur...";
         
-        const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "login", user: u, pass: p }) });
-        const d = await r.json();
-        
-        if(d.status == "ok") { 
-            uAktual = u; 
-            
-            // Krijojme opsionet tek menuja lart
-            const usSelect = document.getElementById("header-user-select");
-            usSelect.innerHTML = `<option value="TOTALI">👨‍👩‍👧‍👦 TOTALI</option>`;
-            allData.users.forEach(user => {
-                usSelect.innerHTML += `<option value="${user}">👤 ${user}</option>`;
-            });
-            
-            usSelect.value = "TOTALI"; // By default te shohim te gjithe familjen
-            usSelect.classList.remove("hidden");
-            
-            document.getElementById("login-ui").classList.add("hidden"); 
-            document.getElementById("app-ui").classList.remove("hidden"); 
-            merrRaportin(); fetchPazarCloud();
-        } else { 
-            alert("PIN i gabuar!"); 
+        try {
+            const d = await dargoNeServer({ action: "login", user: u, pass: p });
+            if(d.status == "ok") { 
+                uAktual = u; 
+                const usSelect = document.getElementById("header-user-select");
+                usSelect.innerHTML = `<option value="TOTALI">👨‍👩‍👧‍👦 TOTALI</option>`;
+                allData.users.forEach(user => {
+                    usSelect.innerHTML += `<option value="${user}">👤 ${user}</option>`;
+                });
+                
+                usSelect.value = "TOTALI"; 
+                usSelect.classList.remove("hidden");
+                
+                document.getElementById("login-ui").classList.add("hidden"); 
+                document.getElementById("app-ui").classList.remove("hidden"); 
+                merrRaportin(); fetchPazarCloud();
+            } else { 
+                alert("PIN i gabuar!"); 
+                btn.innerText = "Hyni ne Sistem";
+            }
+        } catch(e) {
+            alert("S'ka lidhje interneti! Provoni përsëri.");
             btn.innerText = "Hyni ne Sistem";
         }
     };
@@ -269,11 +290,11 @@
         btn.innerText = "..."; btn.disabled = true;
 
         try {
-            await fetch(URL, { method: "POST", body: JSON.stringify({ action: "shto_fond", user: uAktual, shuma: v, burimi: b }) });
+            await dargoNeServer({ action: "shto_fond", user: uAktual, shuma: v, burimi: b });
             mbyllModalFonde();
             merrRaportin();
             showToast("Të ardhurat u shtuan! ✅");
-        } catch(e) { alert("Gabim gjatë lidhjes me serverin!"); }
+        } catch(e) { alert("Nuk u arrit lidhja. Provoni përsëri!"); }
         btn.innerText = "SHTO"; btn.disabled = false;
     }
 
@@ -393,17 +414,22 @@
         document.getElementById("obj-perq").innerText = Math.floor(p) + "%";
         document.getElementById("obj-vlerat").innerText = `${m.toLocaleString()} / ${t.toLocaleString()} L`;
     }
-    async function syncKursimToSheet() {
+    
+    function syncKursimToSheet() {
         const e = document.getElementById("obj-emri").value; localStorage.setItem("obj_emri", e);
-        await fetch(URL, { method: "POST", body: JSON.stringify({ action: "sync_kursim", user: uAktual, emri: e, mbledhur: localStorage.getItem("kursime_mbledhura"), synimi: localStorage.getItem("obj_vlera") }) });
+        // Fire and forget me Auto-Retry
+        dargoNeServer({ action: "sync_kursim", user: uAktual, emri: e, mbledhur: localStorage.getItem("kursime_mbledhura"), synimi: localStorage.getItem("obj_vlera") }).catch(err=>console.log(err));
     }
+    
     async function shtoKursim() { 
         let v = prompt("Sa lekë do të kursesh?"); 
         if(v && !isNaN(v)){ 
             localStorage.setItem("kursime_mbledhura", (parseFloat(localStorage.getItem("kursime_mbledhura"))||0)+parseFloat(v)); 
             perditesoKasaforten(); syncKursimToSheet(); 
-            await fetch(URL, { method: "POST", body: JSON.stringify({ action: "shto", user: uAktual, kat: "Kursime", shuma: v, shenime: "Shtuar në kursime" }) });
-            merrRaportin(); showToast("U kursyen " + v + " L!");
+            try {
+                await dargoNeServer({ action: "shto", user: uAktual, kat: "Kursime", shuma: v, shenime: "Shtuar në kursime" });
+                merrRaportin(); showToast("U kursyen " + v + " L!");
+            } catch(e) { alert("Nuk u ruajt! Kontrolloni internetin."); }
         }
     }
     function ndryshoQellimin() { let t = prompt("Synimi i ri (Lekë):"); if(t){ localStorage.setItem("obj_vlera", t); perditesoKasaforten(); syncKursimToSheet(); }}
@@ -445,20 +471,26 @@
         let kategoriaPerServer = shportaObj[firstItem].p || firstItem;
 
         try {
-            await fetch(URL, { method: "POST", body: JSON.stringify({ action: "shto", user: uAktual, kat: kategoriaPerServer, shuma: v, shenime: fatureTekst.trim() }) });
-            pastroShporten(); merrRaportin(); showToast("Pagesa u krye! ✅");
-        } catch(e) { alert("Gabim!"); }
+            await dargoNeServer({ action: "shto", user: uAktual, kat: kategoriaPerServer, shuma: v, shenime: fatureTekst.trim() });
+            pastroShporten(); 
+            merrRaportin(); 
+            showToast("Pagesa u krye! ✅");
+        } catch(e) { 
+            alert("Nuk u arrit lidhja. Provoni përsëri!"); 
+        }
         btn.innerText = "KRYEJ PAGESËN ✅"; btn.disabled = false;
     }
 
     async function fetchPazarCloud() {
         try {
-            let res = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "get_pazar" }) });
-            let dat = await res.json();
-            if(dat.pazar_list) { pazarData = JSON.parse(dat.pazar_list); shfaqPazarin(); }
+            let dat = await dargoNeServer({ action: "get_pazar" });
+            if(dat && dat.pazar_list) { pazarData = JSON.parse(dat.pazar_list); shfaqPazarin(); }
         } catch(e) {}
     }
-    function syncPazarCloud() { fetch(URL, { method: "POST", body: JSON.stringify({ action: "sync_pazar", pazar_list: JSON.stringify(pazarData) }) }); }
+    function syncPazarCloud() { 
+        // Fire and forget me Auto-Retry
+        dargoNeServer({ action: "sync_pazar", pazar_list: JSON.stringify(pazarData) }).catch(e=>console.log(e)); 
+    }
     function shfaqPazarin() {
         let h = ""; 
         pazarData.forEach((p, i) => { 
@@ -501,47 +533,47 @@
 
     async function merrRaportin() {
         const m = document.getElementById("muaji").value, v = document.getElementById("viti").value;
-        // Lexojmë se kë pamje ka zgjedhur përdoruesi nga dropdown
         const pamjaZgjedhur = document.getElementById("header-user-select").value || "TOTALI";
         
-        const r = await fetch(URL, { method: "POST", body: JSON.stringify({ action: "raporti", muaji: m, viti: v, user: uAktual, pamja_user: pamjaZgjedhur }) });
-        const d = await r.json(); globalRaport = d; historiData = d.lista;
-        document.getElementById("r-mbetja").innerText = d.mbetja.toLocaleString() + " L";
-        
-        let totalLimit = 0; allData.kats.forEach(k => totalLimit += (parseFloat(k.limiti) || 0));
-        let perq = totalLimit > 0 ? (d.dalje / totalLimit) * 100 : 0;
-        document.getElementById("bar-limit").style.width = Math.min(perq, 100) + "%";
-        document.getElementById("txt-limit").innerText = `${d.dalje.toLocaleString()} / ${totalLimit.toLocaleString()} L`;
-        
-        let hHtml = ""; 
-        d.lista.slice(0, 15).forEach(x => {
-            let fatureDetaje = "";
-            if(x.n) {
-                let detajet = x.n.trim().replace(/\n/g, "<br>");
-                fatureDetaje = `<div class="mt-3 p-3 bg-white dark:bg-slate-800 rounded-xl border-l-4 border-blue-500 shadow-sm">
-                                    <div class="text-[11px] text-slate-700 dark:text-slate-200 font-mono leading-relaxed w-full">${detajet}</div>
-                                </div>`;
-            }
+        try {
+            const d = await dargoNeServer({ action: "raporti", muaji: m, viti: v, user: uAktual, pamja_user: pamjaZgjedhur });
+            globalRaport = d; historiData = d.lista;
+            document.getElementById("r-mbetja").innerText = d.mbetja.toLocaleString() + " L";
+            
+            let totalLimit = 0; allData.kats.forEach(k => totalLimit += (parseFloat(k.limiti) || 0));
+            let perq = totalLimit > 0 ? (d.dalje / totalLimit) * 100 : 0;
+            document.getElementById("bar-limit").style.width = Math.min(perq, 100) + "%";
+            document.getElementById("txt-limit").innerText = `${d.dalje.toLocaleString()} / ${totalLimit.toLocaleString()} L`;
+            
+            let hHtml = ""; 
+            d.lista.slice(0, 15).forEach(x => {
+                let fatureDetaje = "";
+                if(x.n) {
+                    let detajet = x.n.trim().replace(/\n/g, "<br>");
+                    fatureDetaje = `<div class="mt-3 p-3 bg-white dark:bg-slate-800 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                                        <div class="text-[11px] text-slate-700 dark:text-slate-200 font-mono leading-relaxed w-full">${detajet}</div>
+                                    </div>`;
+                }
 
-            // Kemi shtuar dhe emrin e user-it te vogel prane kategorise qe te duket se kush e beri blerjen
-            let userBadge = pamjaZgjedhur === "TOTALI" ? `<span class="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 px-1 py-0.5 rounded text-[8px] ml-1">${x.u}</span>` : "";
+                let userBadge = pamjaZgjedhur === "TOTALI" ? `<span class="bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300 px-1 py-0.5 rounded text-[8px] ml-1">${x.u}</span>` : "";
 
-            hHtml += `<div class="border-b dark:border-slate-700 py-4 flex flex-col">
-                        <div class="flex justify-between items-center w-full mb-1">
-                            <div>
-                                <span class="font-black text-[11px] uppercase">${x.k}</span>
-                                ${userBadge}
-                                <span class="text-[10px] text-slate-400 ml-2">${x.d}</span>
+                hHtml += `<div class="border-b dark:border-slate-700 py-4 flex flex-col">
+                            <div class="flex justify-between items-center w-full mb-1">
+                                <div>
+                                    <span class="font-black text-[11px] uppercase">${x.k}</span>
+                                    ${userBadge}
+                                    <span class="text-[10px] text-slate-400 ml-2">${x.d}</span>
+                                </div>
+                                <span class="${x.t === 'hyrje' ? 'text-green-500' : 'text-red-500'} font-bold text-[12px]">
+                                    ${x.t === 'hyrje' ? '+' : '-'}${Math.abs(x.s).toLocaleString()} L
+                                </span>
                             </div>
-                            <span class="${x.t === 'hyrje' ? 'text-green-500' : 'text-red-500'} font-bold text-[12px]">
-                                ${x.t === 'hyrje' ? '+' : '-'}${Math.abs(x.s).toLocaleString()} L
-                            </span>
-                        </div>
-                        ${fatureDetaje}
-                      </div>`;
-        });
-        document.getElementById("historiku-list").innerHTML = hHtml;
-        initKursimet(d.kurs); shfaqGrafikun(d.grafiku);
+                            ${fatureDetaje}
+                          </div>`;
+            });
+            document.getElementById("historiku-list").innerHTML = hHtml;
+            initKursimet(d.kurs); shfaqGrafikun(d.grafiku);
+        } catch(e) { console.warn("Gabim gjatë marrjes së raportit", e); }
     }
 
     function shfaqGrafikun(data) {
@@ -621,7 +653,7 @@
 
         const rreshtat = historiData.map(x => [
             x.d, 
-            x.u, // Shtuar user-i në tabelë
+            x.u, 
             x.k, 
             x.n ? x.n.replace(/\n/g, ", ") : "---", 
             (x.t=="hyrje"?"+":"-")+Math.abs(x.s).toLocaleString()+" L"
