@@ -16,14 +16,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
         body { background-color: var(--bg); color: var(--text); overscroll-behavior-y: none; display: flex; flex-direction: column; height: 100vh; -webkit-tap-highlight-color: transparent; }
         
-        #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
-        .login-box { background: white; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); position: relative; }
+        #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; padding: 20px; text-align: center; }
+        .login-box { background: white; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); position: relative; display: flex; flex-direction: column; align-items: center;}
         
-        /* STILIZIMI I RI PËR LOGON E GEGA OIL */
-        .login-logo { margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
-        .login-logo img { max-width: 130px; height: auto; border-radius: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        /* LOGO DHE TEKSTI I RI */
+        .login-logo { margin-bottom: 15px; display: flex; justify-content: center; align-items: center; }
+        .login-logo img { max-width: 140px; height: auto; border-radius: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .login-brand-1 { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 2px; letter-spacing: -0.5px;}
+        .login-brand-2 { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 25px; }
         
-        .login-box h2 { color: var(--primary); margin-bottom: 25px; font-size: 1.6rem; letter-spacing: -0.5px; }
         .login-box select, .login-box input { width: 100%; padding: 16px; margin-bottom: 15px; border: 2px solid var(--border); border-radius: 12px; font-size: 1.1rem; outline: none; background: #f8fafc; color: var(--primary); font-weight:bold; }
         .login-box select:focus, .login-box input:focus { border-color: var(--accent); background: white; }
         .login-box button { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: transform 0.2s; margin-top: 5px;}
@@ -67,14 +68,13 @@
         
         .rakordimi-box { background: #f8fafc; border: 2px dashed #94a3b8; padding: 12px; border-radius: 10px; margin-bottom: 15px;}
         .rakordimi-box label { font-size: 0.75rem; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        
         .rakordimi-box input, .rakordimi-box select { padding: 10px; font-size: 0.95rem; margin-bottom: 0; height: 46px; border: 2px solid var(--border); border-radius: 8px; width: 100%; background: #ffffff;}
         .rakordimi-box select { color: var(--accent); font-weight: bold; }
 
         .btn { width: 100%; padding: 16px; background-color: var(--accent); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; margin-top: 10px; cursor: pointer;}
         .btn-green { background-color: var(--success); }
         .btn-warning { background-color: var(--warning); color: #fff;}
-        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); }
+        .btn-outline { background: transparent; border: 2px dashed var(--accent); color: var(--accent); }
         .btn-red { background-color: var(--danger); }
 
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid #e2e8f0; border-radius: 10px; background: white;}
@@ -86,7 +86,7 @@
         .toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 24px; border-radius: 30px; font-weight: bold; transition: 0.4s; z-index: 10000; box-shadow: 0 4px 12px rgba(16,185,129,0.3); text-align: center;}
         .toast.show { top: 20px; }
 
-        .list-item { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;}
+        .fature-item { background: #ffffff; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -98,7 +98,8 @@
             <div class="login-logo">
                 <img src="https://logo.clearbit.com/gegaoil.al" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=gegaoil.al&sz=256';" alt="Gega Oil Logo">
             </div>
-            <h2>Sistemi Gega</h2>
+            <div class="login-brand-1">GegaOil</div>
+            <div class="login-brand-2">Myqerem Xhaferi</div>
             
             <select id="loginUserSelect"></select>
             <input type="password" id="loginPass" placeholder="Pini juaj (Fjalëkalimi)">
@@ -144,55 +145,63 @@
                     <span id="cmimiShfaqje" style="color:var(--accent); font-size:1.1rem; font-weight:bold;">0 L</span>
                 </div>
 
-                <div id="shitjeUI">
-                    <div class="form-group" id="adminPunetorZgjedhje" style="display:none; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
-                        <label style="color:var(--primary);">Për cilin punëtor po e hedh?</label>
+                <div id="uiNisTurnin" style="display:none;">
+                    <div class="info-row" style="background:#f8fafc;">
+                        <span style="color:#475569;">Aparati ka mbetur në numrin:</span>
+                        <span id="aparatVjeter_nis" style="font-size:1.2rem; font-weight:bold; color:var(--primary);">0</span>
+                    </div>
+
+                    <div id="adminPunetorNisja" class="form-group" style="display:none; margin-bottom:15px;">
+                        <label style="color:var(--primary);">Për cilin punëtor po hapet turni?</label>
                         <select id="adminZgjidhPunetor"></select>
                     </div>
 
-                    <div class="info-row" style="background: transparent; padding: 0 0 10px 0; border-bottom: 2px dashed #e2e8f0;">
-                        <span style="color:#64748b; font-weight:normal;">Numri i Kaluar (Në Aparat):</span>
-                        <span id="aparatVjeter" style="font-size:1.2rem; font-weight:bold; color:var(--primary);">0</span>
+                    <div class="form-group">
+                        <label>Numri i Fillimit të Turnit</label>
+                        <input type="number" id="aparatFillim" inputmode="decimal">
                     </div>
-                    
-                    <div class="form-group" style="margin-top: 15px;">
-                        <label style="color:var(--accent); font-size: 0.9rem;">Leximi i Ri i Aparatit</label>
-                        <input type="number" id="aparatRi" inputmode="decimal" placeholder="Shtyp numrin që tregon pompa tani..." oninput="llogaritShitjen()">
+                    <button class="btn btn-warning" onclick="nisTurnin()">🚀 Hap Turnin e Ri</button>
+                </div>
+
+                <div id="uiAktiv" style="display:none;">
+                    <div class="info-row" style="background: #fffbeb; border: 1px solid #fde68a;">
+                        <span style="color:#b45309;">Turni hapur! Nisur me numrin:</span>
+                        <span id="aparatFillimDisplay" style="color:#b45309; font-size:1.1rem; font-weight:bold;">0</span>
                     </div>
 
                     <div class="rakordimi-box">
-                        <div class="section-title" style="font-size:0.8rem; margin-bottom:10px;">💳 Fatura e Ndërmjetme (Klientë / Karta)</div>
+                        <div class="section-title" style="font-size:0.8rem; margin-bottom:10px; color:var(--accent);">➕ Shto në Listë (POS/Tollon)</div>
                         
                         <div style="display:flex; gap:8px; margin-bottom:12px;">
-                            <div style="flex:4;"><label>Sasia (Klient)</label><input type="number" id="klientSasia" placeholder="Psh. 50" oninput="llogaritShitjen()"></div>
-                            <div style="flex:3;"><label>Tipi</label>
-                                <select id="klientTipi" onchange="llogaritShitjen()">
-                                    <option value="leke">Lekë</option>
-                                    <option value="litra">Litra</option>
-                                </select>
-                            </div>
-                            <div style="flex:4;"><label>Çmimi(Zbr)</label><input type="number" id="klientCmimi" placeholder="0" oninput="llogaritShitjen()"></div>
+                            <div style="flex:4;"><label>Sasia(Klient)</label><input type="number" id="klientSasia" placeholder="0" oninput="llogaritLive()"></div>
+                            <div style="flex:3;"><label>Tipi</label><select id="klientTipi" onchange="llogaritLive()"><option value="leke">Lekë</option><option value="litra">Litra</option></select></div>
+                            <div style="flex:4;"><label>Çmimi(Zbr)</label><input type="number" id="klientCmimi" placeholder="0" oninput="llogaritLive()"></div>
                         </div>
 
                         <div style="display:flex; gap:8px;">
-                            <div style="flex:4;"><label>Sasia (POS)</label><input type="number" id="posSasia" placeholder="0" oninput="llogaritShitjen()"></div>
-                            <div style="flex:3;"><label>Tipi (POS)</label>
-                                <select id="posTipi" onchange="llogaritShitjen()">
-                                    <option value="leke">Lekë</option>
-                                    <option value="litra">Litra</option>
-                                </select>
-                            </div>
-                            <div style="flex:4;"><label>Tollon (Litra)</label><input type="number" id="tollonLitra" placeholder="0" oninput="llogaritShitjen()"></div>
+                            <div style="flex:4;"><label>Sasia(POS)</label><input type="number" id="posSasia" placeholder="0" oninput="llogaritLive()"></div>
+                            <div style="flex:3;"><label>Tipi(POS)</label><select id="posTipi" onchange="llogaritLive()"><option value="leke">Lekë</option><option value="litra">Litra</option></select></div>
+                            <div style="flex:4;"><label>Tollon(Litra)</label><input type="number" id="tollonLitra" placeholder="0" oninput="llogaritLive()"></div>
                         </div>
+                        
+                        <button class="btn btn-outline" style="padding:12px; font-size:0.95rem; margin-top:12px;" onclick="shtoFatureNder()">💾 Ruaj Këtë Klient në Listë</button>
+                        
+                        <div id="listaFaturaveNder" style="margin-top:12px;"></div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px; border-top: 2px dashed #cbd5e1; padding-top: 20px;">
+                        <label style="color:var(--danger); font-size: 0.95rem;">🛑 Mbyllja e Turnit (Leximi i Ri Përfundimtar)</label>
+                        <input type="number" id="aparatMbarim" inputmode="decimal" placeholder="Shtyp numrin përfundimtar në darkë..." oninput="llogaritLive()">
                     </div>
 
                     <div class="kalkulimi">
-                        <div style="margin-bottom: 5px;">Litra të Shitura (Tani): <span id="rezLitra" style="float:right; color:#94a3b8;">0 L</span></div>
-                        <div style="margin-bottom: 10px; font-size:0.85rem; color:#64748b;">Vlera Faturuar: <span id="totalVlera" style="float:right;">0 Lekë</span></div>
-                        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">CASH DETYRIM: <span id="rezLeke" class="vlerat-totale">0 Lekë</span></div>
+                        <div style="margin-bottom: 5px;">Litra Totale Shitura: <span id="rezLitra" style="float:right; color:#94a3b8;">0 L</span></div>
+                        <div style="margin-bottom: 5px; font-size:0.85rem; color:#64748b;">Vlera Faturuar: <span id="totalVlera" style="float:right;">0 Lekë</span></div>
+                        <div style="margin-bottom: 10px; font-size:0.85rem; color:#ef4444;">Zbritje nga Lista: <span id="rezZbritje" style="float:right;">0 Lekë</span></div>
+                        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">CASH DETYRIM PËR DORËZIM: <span id="rezLeke" class="vlerat-totale">0 Lekë</span></div>
                     </div>
                     
-                    <button class="btn btn-green" onclick="ruajShitjen()">💾 Ruaj (Kalo te Tjetri)</button>
+                    <button class="btn btn-red" onclick="mbyllTurnin()">Mbyll Turnin dhe Ruaj Ditën</button>
                 </div>
             </div>
         </div>
@@ -487,36 +496,62 @@
             document.getElementById('produktetContainer').style.display = 'block'; document.getElementById('fushaTeDhenave').style.display = 'none';
         }
 
+        // LOGJIKA E RE E TURNIT TE HAPUR ME LISTE FATURASH
         window.zgjidhProduktin = function(prodId, el) {
             produktiZgjedhur = produktet[pompaZgjedhur].find(p => p.id === prodId);
             document.querySelectorAll('#produktetGrid .icon-btn').forEach(b => b.classList.remove('selected')); el.classList.add('selected');
             document.getElementById('fushaTeDhenave').style.display = 'block'; 
             document.getElementById('cmimiShfaqje').innerText = produktiZgjedhur.cmimi + " L";
 
-            let celesi = 'aparat_' + pikaAktuale + '_' + prodId; 
-            let vjeter = localStorage.getItem(celesi) || 0;
+            let celesiAparat = 'aparat_' + pikaAktuale + '_' + prodId; 
+            let vjeterAparat = localStorage.getItem(celesiAparat) || 0;
 
-            document.getElementById('aparatVjeter').innerText = vjeter;
-            document.getElementById('aparatRi').value = '';
-            
-            ['klientSasia','klientCmimi','posSasia','tollonLitra'].forEach(i=>document.getElementById(i).value='');
-            document.getElementById('klientTipi').value = 'leke';
-            document.getElementById('posTipi').value = 'leke';
-            
-            if(currentUser.roli === 'admin') {
-                mbushPunetoretSipasPikes();
-                document.getElementById('adminPunetorZgjedhje').style.display = 'block';
+            let celesiTurn = 'turni_aktiv_' + pikaAktuale + '_' + prodId;
+            let turni = JSON.parse(localStorage.getItem(celesiTurn));
+
+            if(!turni) {
+                // S'ka turn aktiv
+                document.getElementById('uiNisTurnin').style.display = 'block';
+                document.getElementById('uiAktiv').style.display = 'none';
+                document.getElementById('aparatVjeter_nis').innerText = vjeterAparat;
+                document.getElementById('aparatFillim').value = vjeterAparat;
+                
+                if(currentUser.roli === 'admin') {
+                    mbushPunetoretSipasPikes();
+                    document.getElementById('adminPunetorNisja').style.display = 'block';
+                } else {
+                    document.getElementById('adminPunetorNisja').style.display = 'none';
+                }
             } else {
-                document.getElementById('adminPunetorZgjedhje').style.display = 'none';
+                // Ka turn aktiv
+                document.getElementById('uiNisTurnin').style.display = 'none';
+                document.getElementById('uiAktiv').style.display = 'block';
+                document.getElementById('aparatFillimDisplay').innerText = turni.fillim;
+                
+                ['klientSasia','klientCmimi','posSasia','tollonLitra','aparatMbarim'].forEach(i=>document.getElementById(i).value='');
+                document.getElementById('klientTipi').value = 'leke';
+                document.getElementById('posTipi').value = 'leke';
+                
+                renderFaturatNder();
+                llogaritLive();
             }
-            llogaritShitjen();
         }
 
-        window.llogaritShitjen = function() {
-            let vjeter = parseFloat(document.getElementById('aparatVjeter').innerText)||0;
-            let ri = parseFloat(document.getElementById('aparatRi').value)||0;
-            let litTot = Math.max(0, ri - vjeter);
+        window.nisTurnin = function() {
+            let fillim = parseFloat(document.getElementById('aparatFillim').value);
+            if(isNaN(fillim)) return alert("Vendosni numrin e fillimit!");
             
+            let punetoriTurnit = currentUser.roli === 'admin' ? document.getElementById('adminZgjidhPunetor').value : currentUser.emri;
+            
+            let turniObj = { fillim: fillim, punetori: punetoriTurnit, faturat: [] };
+            let celesiTurn = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            localStorage.setItem(celesiTurn, JSON.stringify(turniObj));
+            
+            shfaqNjoftim("🚀 Turni u hap me sukses!");
+            zgjidhProduktin(produktiZgjedhur.id, document.querySelector('.icon-btn.selected'));
+        }
+
+        window.shtoFatureNder = function() {
             let kSasia = parseFloat(document.getElementById('klientSasia').value)||0;
             let kTipi = document.getElementById('klientTipi').value;
             let kCmimi = parseFloat(document.getElementById('klientCmimi').value)||produktiZgjedhur.cmimi;
@@ -530,55 +565,143 @@
             let tollonLitra = parseFloat(document.getElementById('tollonLitra').value)||0;
             let lekeTollon = tollonLitra * produktiZgjedhur.cmimi;
 
-            let litNorm = Math.max(0, litTot - litK);
-            let vTot = (litNorm * produktiZgjedhur.cmimi) + lekeK;
-            let cash = vTot - lekePOS - lekeTollon;
+            if(lekeK===0 && lekePOS===0 && lekeTollon===0) return alert("Ju lutem plotësoni të paktën një fushë!");
+
+            let celesi = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            let turni = JSON.parse(localStorage.getItem(celesi));
+            
+            let koha = new Date().toLocaleTimeString('sq-AL', {hour: '2-digit', minute:'2-digit'});
+            turni.faturat.push({ litK, lekeK, lekePOS, lekeTollon, d: koha });
+            
+            localStorage.setItem(celesi, JSON.stringify(turni));
+
+            ['klientSasia','klientCmimi','posSasia','tollonLitra'].forEach(i=>document.getElementById(i).value='');
+            renderFaturatNder();
+            llogaritLive();
+            shfaqNjoftim("💾 Fatura u shtua në listë!");
+        }
+
+        window.renderFaturatNder = function() {
+            let celesi = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            let turni = JSON.parse(localStorage.getItem(celesi));
+            let html = '';
+            
+            if(turni.faturat.length === 0) {
+                html = `<div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:10px;">Nuk ka fatura të shtuara ende.</div>`;
+            } else {
+                turni.faturat.forEach((f, idx) => {
+                    let detaje = [];
+                    if(f.lekeK > 0) detaje.push(`Klient: ${f.lekeK}L`);
+                    if(f.lekePOS > 0) detaje.push(`POS: ${f.lekePOS}L`);
+                    if(f.lekeTollon > 0) detaje.push(`Tollon: ${f.lekeTollon}L`);
+                    html += `<div class="fature-item">
+                        <div><span style="color:#64748b; font-size:0.75rem; margin-right:8px;">${f.d}</span> <b>${detaje.join(' | ')}</b></div>
+                        <span style="color:#ef4444; cursor:pointer; font-weight:bold; font-size:1.4rem; line-height:1; padding:0 8px;" onclick="fshiFatureNder(${idx})">×</span>
+                    </div>`;
+                });
+            }
+            document.getElementById('listaFaturaveNder').innerHTML = html;
+        }
+
+        window.fshiFatureNder = function(index) {
+            let celesi = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            let turni = JSON.parse(localStorage.getItem(celesi));
+            turni.faturat.splice(index, 1);
+            localStorage.setItem(celesi, JSON.stringify(turni));
+            renderFaturatNder();
+            llogaritLive();
+        }
+
+        window.llogaritLive = function() {
+            let celesi = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            let turni = JSON.parse(localStorage.getItem(celesi));
+            if(!turni) return;
+
+            let fillim = turni.fillim;
+            let mbarim = parseFloat(document.getElementById('aparatMbarim').value)||0;
+            let litTot = Math.max(0, mbarim - fillim);
+
+            let sumPOS=0, sumTollon=0, sumKlientLitra=0, sumKlientLeke=0;
+            turni.faturat.forEach(f => { sumPOS+=f.lekePOS; sumTollon+=f.lekeTollon; sumKlientLeke+=f.lekeK; sumKlientLitra+=f.litK; });
+
+            let kSasia = parseFloat(document.getElementById('klientSasia').value)||0;
+            let kTipi = document.getElementById('klientTipi').value;
+            let kCmimi = parseFloat(document.getElementById('klientCmimi').value)||produktiZgjedhur.cmimi;
+            let litK_curr = (kTipi === 'leke') ? (kCmimi > 0 ? kSasia / kCmimi : 0) : kSasia;
+            let lekeK_curr = (kTipi === 'leke') ? kSasia : (kSasia * kCmimi);
+            
+            let posSasia = parseFloat(document.getElementById('posSasia').value)||0;
+            let posTipi = document.getElementById('posTipi').value;
+            let lekePOS_curr = (posTipi === 'leke') ? posSasia : (posSasia * produktiZgjedhur.cmimi);
+            
+            let tollonLitra = parseFloat(document.getElementById('tollonLitra').value)||0;
+            let lekeTollon_curr = tollonLitra * produktiZgjedhur.cmimi;
+
+            let totalPOS = sumPOS + lekePOS_curr;
+            let totalTollon = sumTollon + lekeTollon_curr;
+            let totalKlientLitra = sumKlientLitra + litK_curr;
+            let totalKlientLeke = sumKlientLeke + lekeK_curr;
+
+            let totalZbritjeFaturuar = totalPOS + totalTollon;
+
+            let litraNormale = Math.max(0, litTot - totalKlientLitra);
+            let vleraNormale = litraNormale * produktiZgjedhur.cmimi;
+            let totalFaturuar = vleraNormale + totalKlientLeke;
+
+            let cash = totalFaturuar - totalZbritjeFaturuar;
 
             document.getElementById('rezLitra').innerText = litTot.toFixed(2) + " L"; 
-            document.getElementById('totalVlera').innerText = new Intl.NumberFormat('sq-AL').format(vTot) + " L"; 
+            document.getElementById('totalVlera').innerText = new Intl.NumberFormat('sq-AL').format(totalFaturuar) + " L"; 
+            document.getElementById('rezZbritje').innerText = "-" + new Intl.NumberFormat('sq-AL').format(totalZbritjeFaturuar) + " L"; 
             document.getElementById('rezLeke').innerText = new Intl.NumberFormat('sq-AL').format(cash) + " L";
         }
 
-        window.ruajShitjen = function() {
-            let vjeter = parseFloat(document.getElementById('aparatVjeter').innerText)||0;
-            let ri = parseFloat(document.getElementById('aparatRi').value);
-            if(!ri || ri <= vjeter) return alert("Numri i ri i aparatit duhet të jetë më i madh se i kaluari!");
+        window.mbyllTurnin = function() {
+            let celesiTurn = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            let turni = JSON.parse(localStorage.getItem(celesiTurn));
+            
+            let mbarim = parseFloat(document.getElementById('aparatMbarim').value);
+            if(!mbarim || mbarim <= turni.fillim) return alert("Ju lutem vendosni numrin përfundimtar të aparatit (më të madh se fillimi) për ta mbyllur turnin!");
 
+            let sumPOS=0, sumTollon=0, sumKlientLitra=0, sumKlientLeke=0;
+            turni.faturat.forEach(f => { sumPOS+=f.lekePOS; sumTollon+=f.lekeTollon; sumKlientLeke+=f.lekeK; sumKlientLitra+=f.litK; });
+
+            // Perfshi edhe fushat nese i ka len pa i shtypur 'Ruaj ne liste'
             let kSasia = parseFloat(document.getElementById('klientSasia').value)||0;
             let kTipi = document.getElementById('klientTipi').value;
             let kCmimi = parseFloat(document.getElementById('klientCmimi').value)||produktiZgjedhur.cmimi;
-            let litK = (kTipi === 'leke') ? (kCmimi > 0 ? kSasia / kCmimi : 0) : kSasia;
-            let lekeK = (kTipi === 'leke') ? kSasia : (kSasia * kCmimi);
+            let litK_curr = (kTipi === 'leke') ? (kCmimi > 0 ? kSasia / kCmimi : 0) : kSasia;
+            let lekeK_curr = (kTipi === 'leke') ? kSasia : (kSasia * kCmimi);
             
             let posSasia = parseFloat(document.getElementById('posSasia').value)||0;
             let posTipi = document.getElementById('posTipi').value;
-            let lekePOS = (posTipi === 'leke') ? posSasia : (posSasia * produktiZgjedhur.cmimi);
+            let lekePOS_curr = (posTipi === 'leke') ? posSasia : (posSasia * produktiZgjedhur.cmimi);
             
             let tollonLitra = parseFloat(document.getElementById('tollonLitra').value)||0;
-            let lekeTollon = tollonLitra * produktiZgjedhur.cmimi;
+            let lekeTollon_curr = tollonLitra * produktiZgjedhur.cmimi;
 
-            let litTot = ri - vjeter;
-            let litNorm = Math.max(0, litTot - litK);
-            let vTot = (litNorm * produktiZgjedhur.cmimi) + lekeK;
-            let cash = vTot - lekePOS - lekeTollon;
+            let totalPOS = sumPOS + lekePOS_curr;
+            let totalTollon = sumTollon + lekeTollon_curr;
+            let totalKlientLitra = sumKlientLitra + litK_curr;
+            let totalKlientLeke = sumKlientLeke + lekeK_curr;
 
-            let punetori = currentUser.roli === 'admin' ? document.getElementById('adminZgjidhPunetor').value : currentUser.emri;
-            let detaje = currentUser.roli === 'admin' ? 'Krijuar nga Admin' : '';
+            let litTot = mbarim - turni.fillim;
+            let litraNormale = Math.max(0, litTot - totalKlientLitra);
+            let vleraNormale = litraNormale * produktiZgjedhur.cmimi;
+            let totalFaturuar = vleraNormale + totalKlientLeke;
+            let cash = totalFaturuar - totalPOS - totalTollon;
 
+            // Ruan turnin e plote ne histori
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
-            h.push({id: Date.now(), data: new Date().toISOString(), userEmri: punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: vjeter, mbarim: ri, litra: litTot, xhiro: vTot, cash: cash, pos: lekePOS, tollona: lekeTollon, litraZbritje: litK, tipi: 'shitje', detaje: detaje});
+            h.push({id: Date.now(), data: new Date().toISOString(), userEmri: turni.punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: turni.fillim, mbarim: mbarim, litra: litTot, xhiro: totalFaturuar, cash: cash, pos: totalPOS, tollona: totalTollon, litraZbritje: totalKlientLitra, tipi: 'shitje', detaje: `${turni.faturat.length} Fatura Klienti`});
             localStorage.setItem('db_history', JSON.stringify(h));
 
-            localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, ri);
+            // Fshin turnin aktiv dhe perditeson aparatin
+            localStorage.removeItem(celesiTurn);
+            localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, mbarim);
 
-            document.getElementById('aparatVjeter').innerText = ri;
-            document.getElementById('aparatRi').value = '';
-            ['klientSasia','klientCmimi','posSasia','tollonLitra'].forEach(i=>document.getElementById(i).value='');
-            document.getElementById('klientTipi').value = 'leke';
-            document.getElementById('posTipi').value = 'leke';
-            llogaritShitjen();
-
-            shfaqNjoftim("✅ Shitja u ruajt! Gati për makinën tjetër.");
+            shfaqNjoftim("🛑 Turni u mbyll dhe dita u ruajt me sukses!");
+            zgjidhProduktin(produktiZgjedhur.id, document.querySelector('.icon-btn.selected'));
         }
 
         window.ngarkoOpsionetFurnizim = function() { let sel = document.getElementById('furnizimProdukti'); sel.innerHTML = ''; let uniket = {}; for(let p in produktet) { produktet[p].forEach(pr => { uniket[pr.emri] = true; }); } for(let u in uniket) sel.innerHTML += `<option value="${u}">${u}</option>`; }
@@ -737,7 +860,7 @@
             if(document.getElementById('konfirmoReset').value !== "FSHI") return alert("Ju lutem shtypni fjalën FSHI për të konfirmuar.");
             if(confirm("Jeni i sigurt? Fshihen vetëm faturat. Punëtorët NUK fshihen!")) { 
                 localStorage.setItem('db_history', JSON.stringify([]));
-                Object.keys(localStorage).forEach(k => { if(k.startsWith('aparat_')) localStorage.removeItem(k); });
+                Object.keys(localStorage).forEach(k => { if(k.startsWith('aparat_') || k.startsWith('turni_aktiv_')) localStorage.removeItem(k); });
                 location.reload(); 
             } 
         }
