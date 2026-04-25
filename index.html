@@ -18,7 +18,11 @@
         
         #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; padding: 20px; }
         .login-box { background: white; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); position: relative; }
-        .login-logo { font-size: 3.5rem; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* STILIZIMI I RI PËR LOGON E GEGA OIL */
+        .login-logo { margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
+        .login-logo img { max-width: 130px; height: auto; border-radius: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        
         .login-box h2 { color: var(--primary); margin-bottom: 25px; font-size: 1.6rem; letter-spacing: -0.5px; }
         .login-box select, .login-box input { width: 100%; padding: 16px; margin-bottom: 15px; border: 2px solid var(--border); border-radius: 12px; font-size: 1.1rem; outline: none; background: #f8fafc; color: var(--primary); font-weight:bold; }
         .login-box select:focus, .login-box input:focus { border-color: var(--accent); background: white; }
@@ -64,7 +68,6 @@
         .rakordimi-box { background: #f8fafc; border: 2px dashed #94a3b8; padding: 12px; border-radius: 10px; margin-bottom: 15px;}
         .rakordimi-box label { font-size: 0.75rem; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
-        /* Modifikime per inputet e Fatures Ndermjetme qe te dalin mire ne rrjesht */
         .rakordimi-box input, .rakordimi-box select { padding: 10px; font-size: 0.95rem; margin-bottom: 0; height: 46px; border: 2px solid var(--border); border-radius: 8px; width: 100%; background: #ffffff;}
         .rakordimi-box select { color: var(--accent); font-weight: bold; }
 
@@ -92,8 +95,11 @@
 
     <div id="loginScreen">
         <div class="login-box">
-            <div class="login-logo">⛽</div>
-            <h2>-----GegaOil----- Myqerem_Xhaferi</h2>
+            <div class="login-logo">
+                <img src="https://logo.clearbit.com/gegaoil.al" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=gegaoil.al&sz=256';" alt="Gega Oil Logo">
+            </div>
+            <h2>Sistemi Gega</h2>
+            
             <select id="loginUserSelect"></select>
             <input type="password" id="loginPass" placeholder="Pini juaj (Fjalëkalimi)">
             <button onclick="login()">Hyr në Sistem</button>
@@ -493,7 +499,6 @@
             document.getElementById('aparatVjeter').innerText = vjeter;
             document.getElementById('aparatRi').value = '';
             
-            // Pastrojme fushat per fature te re
             ['klientSasia','klientCmimi','posSasia','tollonLitra'].forEach(i=>document.getElementById(i).value='');
             document.getElementById('klientTipi').value = 'leke';
             document.getElementById('posTipi').value = 'leke';
@@ -512,24 +517,19 @@
             let ri = parseFloat(document.getElementById('aparatRi').value)||0;
             let litTot = Math.max(0, ri - vjeter);
             
-            // 1. Llogaritjet per Klientin (Zbritja)
             let kSasia = parseFloat(document.getElementById('klientSasia').value)||0;
             let kTipi = document.getElementById('klientTipi').value;
             let kCmimi = parseFloat(document.getElementById('klientCmimi').value)||produktiZgjedhur.cmimi;
-            
             let litK = (kTipi === 'leke') ? (kCmimi > 0 ? kSasia / kCmimi : 0) : kSasia;
             let lekeK = (kTipi === 'leke') ? kSasia : (kSasia * kCmimi);
             
-            // 2. Llogaritjet per POS
             let posSasia = parseFloat(document.getElementById('posSasia').value)||0;
             let posTipi = document.getElementById('posTipi').value;
             let lekePOS = (posTipi === 'leke') ? posSasia : (posSasia * produktiZgjedhur.cmimi);
             
-            // 3. Llogaritjet per Tollon
             let tollonLitra = parseFloat(document.getElementById('tollonLitra').value)||0;
             let lekeTollon = tollonLitra * produktiZgjedhur.cmimi;
 
-            // Totali i Pergjithshem
             let litNorm = Math.max(0, litTot - litK);
             let vTot = (litNorm * produktiZgjedhur.cmimi) + lekeK;
             let cash = vTot - lekePOS - lekeTollon;
@@ -565,15 +565,12 @@
             let punetori = currentUser.roli === 'admin' ? document.getElementById('adminZgjidhPunetor').value : currentUser.emri;
             let detaje = currentUser.roli === 'admin' ? 'Krijuar nga Admin' : '';
 
-            // Ruan ne databaze
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: vjeter, mbarim: ri, litra: litTot, xhiro: vTot, cash: cash, pos: lekePOS, tollona: lekeTollon, litraZbritje: litK, tipi: 'shitje', detaje: detaje});
             localStorage.setItem('db_history', JSON.stringify(h));
 
-            // Perditeson numrin ne memorie
             localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, ri);
 
-            // Bën reset fushat direkt për klientin e radhës
             document.getElementById('aparatVjeter').innerText = ri;
             document.getElementById('aparatRi').value = '';
             ['klientSasia','klientCmimi','posSasia','tollonLitra'].forEach(i=>document.getElementById(i).value='');
@@ -706,7 +703,6 @@
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
                 };
                 
-                // Heqim njoftimin bllokues. Nese telefoni bllokon shkarkimin, i themi skriptit ta hape skedarin ne nje dritare te re.
                 html2pdf().set(opt).from(element).save().then(() => {
                     btn.innerText = "📥 Shkarko PDF"; btn.disabled = false;
                 }).catch(e => {
