@@ -19,7 +19,6 @@
         #loginScreen { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; padding: 20px; text-align: center; }
         .login-box { background: white; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); position: relative; display: flex; flex-direction: column; align-items: center;}
         
-        /* LOGO DHE TEKSTI I RI */
         .login-logo { margin-bottom: 15px; display: flex; justify-content: center; align-items: center; }
         .login-logo img { max-width: 140px; height: auto; border-radius: 12px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
         .login-brand-1 { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 2px; letter-spacing: -0.5px;}
@@ -62,6 +61,7 @@
         label { display: block; margin-bottom: 5px; font-weight: 600; color: #334155; font-size: 0.85rem;}
         input, select { width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.1rem; background: #f8fafc; outline: none; }
         
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .info-row { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; font-weight: bold;}
         .kalkulimi { background: #1e293b; color: white; padding: 15px; border-radius: 12px; margin-top: 15px; }
         .vlerat-totale { font-weight: 800; font-size: 1.3rem; color: #34d399; float: right;}
@@ -228,9 +228,15 @@
         <div id="kafeja" class="view">
             <div class="card">
                 <div class="section-title">☕ Xhiro e Bar Kafesë (<span id="shfaqPikenKafe">Gega Poliçan</span>)</div>
-                <div class="form-group"><label>Lekë në Kasë (Për dorëzim)</label><input type="number" id="kafeXhiro" inputmode="decimal"></div>
-                <div class="form-group"><label>Shpenzime të Përditshme</label><input type="number" id="kafeShpenzime" inputmode="decimal"></div>
-                <button class="btn btn-green" onclick="ruajKafen()">Ruaj Mbylljen e Kafesë</button>
+                <div class="form-group"><label>Lekë në Kasë (Për dorëzim)</label><input type="number" id="kafeXhiro" inputmode="decimal" placeholder="Lekë CASH për t'u dorëzuar..."></div>
+                <button class="btn btn-green" onclick="ruajKafen()">Ruaj Dorëzimin e Lekëve</button>
+            </div>
+            
+            <div class="card">
+                <div class="section-title" style="color:var(--warning);">📦 Furnizimet e Kafesë & Pagesat</div>
+                <div class="form-group"><label>Numri i Faturës / Përshkrimi</label><input type="text" id="kafeFatura" placeholder="Psh. Fatura e Coca-Colës..."></div>
+                <div class="form-group"><label>Pagesa Për Furnitorin (Lekë CASH)</label><input type="number" id="kafePagesaFurnitor" inputmode="decimal" placeholder="0"></div>
+                <button class="btn btn-warning" onclick="ruajFurnizimKafene()">Regjistro Pagesën e Furnitorit</button>
             </div>
         </div>
 
@@ -268,7 +274,7 @@
                         <div style="font-size: 1.3rem; font-weight: bold; color: #34d399;" id="rapTotalNafte">0 L</div>
                     </div>
                     <div>
-                        <div style="font-size: 0.8rem; color: #94a3b8;">Të Hyrë CASH</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">Të Hyrë CASH (Totali)</div>
                         <div style="font-size: 1.3rem; font-weight: bold; color: #f59e0b;" id="rapTotalCash">0 L</div>
                     </div>
                 </div>
@@ -345,8 +351,25 @@
             </div>
 
             <div class="card">
-                <div class="section-title">🏷️ Çmimet e Karburantit</div>
+                <div class="section-title">🏷️ Menaxho Produktet & Çmimet</div>
                 <div id="listaProdukteve"></div>
+                
+                <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: 15px;">
+                    <div class="section-title" style="font-size:0.8rem;">➕ Shto Produkt të Ri</div>
+                    <div class="grid-2" style="margin-bottom:10px;">
+                        <select id="shtProdPompa">
+                            <option value="P1">Pomp 1</option>
+                            <option value="P2">Pomp 2</option>
+                            <option value="P3">Pomp 3</option>
+                        </select>
+                        <input type="text" id="shtProdEmri" placeholder="Emri (psh. Naftë)" style="margin-bottom:0;">
+                    </div>
+                    <div class="grid-2" style="margin-bottom:10px;">
+                        <input type="number" id="shtProdCmimi" placeholder="Çmimi" style="margin-bottom:0;">
+                        <input type="text" id="shtProdIkona" placeholder="Ikona (psh. 💧)" style="margin-bottom:0;">
+                    </div>
+                    <button class="btn" style="background:#475569;" onclick="shtoProdukt()">+ Shto Produktin në Pompë</button>
+                </div>
             </div>
             
             <div class="card">
@@ -496,7 +519,6 @@
             document.getElementById('produktetContainer').style.display = 'block'; document.getElementById('fushaTeDhenave').style.display = 'none';
         }
 
-        // LOGJIKA E RE E TURNIT TE HAPUR ME LISTE FATURASH
         window.zgjidhProduktin = function(prodId, el) {
             produktiZgjedhur = produktet[pompaZgjedhur].find(p => p.id === prodId);
             document.querySelectorAll('#produktetGrid .icon-btn').forEach(b => b.classList.remove('selected')); el.classList.add('selected');
@@ -510,7 +532,6 @@
             let turni = JSON.parse(localStorage.getItem(celesiTurn));
 
             if(!turni) {
-                // S'ka turn aktiv
                 document.getElementById('uiNisTurnin').style.display = 'block';
                 document.getElementById('uiAktiv').style.display = 'none';
                 document.getElementById('aparatVjeter_nis').innerText = vjeterAparat;
@@ -523,7 +544,6 @@
                     document.getElementById('adminPunetorNisja').style.display = 'none';
                 }
             } else {
-                // Ka turn aktiv
                 document.getElementById('uiNisTurnin').style.display = 'none';
                 document.getElementById('uiAktiv').style.display = 'block';
                 document.getElementById('aparatFillimDisplay').innerText = turni.fillim;
@@ -666,7 +686,6 @@
             let sumPOS=0, sumTollon=0, sumKlientLitra=0, sumKlientLeke=0;
             turni.faturat.forEach(f => { sumPOS+=f.lekePOS; sumTollon+=f.lekeTollon; sumKlientLeke+=f.lekeK; sumKlientLitra+=f.litK; });
 
-            // Perfshi edhe fushat nese i ka len pa i shtypur 'Ruaj ne liste'
             let kSasia = parseFloat(document.getElementById('klientSasia').value)||0;
             let kTipi = document.getElementById('klientTipi').value;
             let kCmimi = parseFloat(document.getElementById('klientCmimi').value)||produktiZgjedhur.cmimi;
@@ -691,12 +710,10 @@
             let totalFaturuar = vleraNormale + totalKlientLeke;
             let cash = totalFaturuar - totalPOS - totalTollon;
 
-            // Ruan turnin e plote ne histori
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: turni.punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: turni.fillim, mbarim: mbarim, litra: litTot, xhiro: totalFaturuar, cash: cash, pos: totalPOS, tollona: totalTollon, litraZbritje: totalKlientLitra, tipi: 'shitje', detaje: `${turni.faturat.length} Fatura Klienti`});
             localStorage.setItem('db_history', JSON.stringify(h));
 
-            // Fshin turnin aktiv dhe perditeson aparatin
             localStorage.removeItem(celesiTurn);
             localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, mbarim);
 
@@ -714,16 +731,30 @@
         }
         window.ngarkoTabelenFurnizimeve = function() { let h = JSON.parse(localStorage.getItem('db_history'))||[], f = h.filter(x => x.tipi === 'furnizim').slice(-15).reverse(), tb = document.getElementById('tabelaFurnizimeve'); tb.innerHTML = f.length?f.map(x=>`<tr><td><b>${x.pika}</b></td><td>${new Date(x.data).toLocaleString('sq-AL',{day:'2-digit',month:'2-digit'})} - ${x.produktiEmri}</td><td style="color:var(--success);font-weight:bold;">+${x.litra}L</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;">Asnjë</td></tr>'; }
         
+        // MODIFIKIM: RUAJTJA E KAFES DHE FURNIZIMIT
         window.ruajKafen = function() { 
-            let x = parseFloat(document.getElementById('kafeXhiro').value), s = parseFloat(document.getElementById('kafeShpenzime').value)||0; if(!x) return; 
+            let x = parseFloat(document.getElementById('kafeXhiro').value);
+            if(!x) return; 
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
-            h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: 'Kafe', pompa: 'Kasë', fillim: 0, mbarim: 0, litra: 0, xhiro: x-s, cash: x-s, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'kafe', detaje: `Shpenzime: ${s}L`});
+            h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: 'Kafe', pompa: 'Kasë', fillim: 0, mbarim: 0, litra: 0, xhiro: x, cash: x, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'kafe', detaje: `Dorëzim Cash`});
             localStorage.setItem('db_history', JSON.stringify(h));
-            document.getElementById('kafeXhiro').value=''; document.getElementById('kafeShpenzime').value=''; shfaqNjoftim("Mbyllja e kafesë u ruajt!"); 
+            document.getElementById('kafeXhiro').value=''; shfaqNjoftim("Lekët e kafesë u ruajtën!"); 
+        }
+
+        window.ruajFurnizimKafene = function() {
+            let fat = document.getElementById('kafeFatura').value || 'Pa faturë';
+            let lek = parseFloat(document.getElementById('kafePagesaFurnitor').value);
+            if(!lek) return alert("Vendosni vlerën e pagesës në lekë!");
+            let h = JSON.parse(localStorage.getItem('db_history')) || [];
+            // Regjistrimi ruhet si kosto (cash negativ) qe te zbres nga totali
+            h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: 'Furnizim Kafe', pompa: 'Shpenzim', fillim: 0, mbarim: 0, litra: 0, xhiro: 0, cash: -lek, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'kafe_furnizim', detaje: `Fat: ${fat}`});
+            localStorage.setItem('db_history', JSON.stringify(h));
+            document.getElementById('kafeFatura').value=''; document.getElementById('kafePagesaFurnitor').value=''; shfaqNjoftim("Pagesa e furnitorit u ruajt!"); 
         }
 
         window.mbushFiltrinPunetoreve = function() { let s = document.getElementById('filtriPunetorit'); s.innerHTML = '<option value="te_gjithe">Të gjithë</option>'; (JSON.parse(localStorage.getItem('db_users'))||[]).forEach(u => s.innerHTML += `<option value="${u.emri}">${u.emri}</option>`); }
 
+        // MODIFIKIM: RAPORTIMI ME NGJYRA PER KAFENE/FURNIZIMIN
         window.gjeneroRaportin = function() {
             let h = JSON.parse(localStorage.getItem('db_history')) || [], fPika = document.getElementById('filtriPikesRaport').value, fKoha = document.getElementById('filtriKohes').value, fUser = document.getElementById('filtriPunetorit').value, t = new Date();
             let d = h.filter(x => {
@@ -756,15 +787,16 @@
                         <td style="color:#8b5cf6;">${(x.tollona||0)>0 ? new Intl.NumberFormat('sq-AL').format(x.tollona)+' L' : '-'}</td>
                         <td style="color:var(--success); font-weight:bold; font-size:1.1rem;">${new Intl.NumberFormat('sq-AL').format(cashV)} L</td>
                     </tr>`;
-                } else if(x.tipi === 'kafe') {
-                    tCash+=cashV;
+                } else if(x.tipi === 'kafe' || x.tipi === 'kafe_furnizim') {
+                    let isFurnizim = x.tipi === 'kafe_furnizim';
+                    tCash += cashV;
                     rowHtml = `<tr>
                         <td>${dt}</td><td><b>${x.userEmri}</b></td>
-                        <td><small style="color:#60a5fa; font-weight:bold;">☕ Kafeja</small></td>
+                        <td><small style="color:${isFurnizim?'#ef4444':'#60a5fa'}; font-weight:bold;">${isFurnizim?'📦 Furnizim Kafe':'☕ Kafeja'}</small></td>
+                        <td colspan="2"><small style="color:#64748b;">${x.detaje}</small></td>
+                        <td><b>${isFurnizim ? '-' : new Intl.NumberFormat('sq-AL').format(x.xhiro) + ' L'}</b></td>
                         <td>-</td><td>-</td>
-                        <td><b>${new Intl.NumberFormat('sq-AL').format(x.xhiro)} L</b></td>
-                        <td>-</td><td>-</td>
-                        <td style="color:var(--success); font-weight:bold; font-size:1.1rem;">${new Intl.NumberFormat('sq-AL').format(cashV)} L</td>
+                        <td style="color:${isFurnizim?'#ef4444':'var(--success)'}; font-weight:bold; font-size:1.1rem;">${new Intl.NumberFormat('sq-AL').format(cashV)} L</td>
                     </tr>`;
                 }
                 
@@ -835,9 +867,23 @@
             }, 600);
         }
 
+        // MODIFIKIM: SHTIMI DHE FSHIRJA DINAMIKE E PRODUKTEVE
         window.gjeneroSettings = function() {
-            let ph = ''; for(let p in produktet) produktet[p].forEach((pr,i) => ph += `<div class="list-item"><div><strong>${pr.ikona} ${pr.emri}</strong> (${p})</div><div><input type="number" id="c_${p}_${i}" value="${pr.cmimi}" style="width:70px;padding:5px;"><button onclick="ruajCmimTekSettings('${p}',${i})" class="btn-green" style="padding:5px;">Ruaj</button></div></div>`);
-            document.getElementById('listaProdukteve').innerHTML = ph; ngarkoOpsionetKolaudim();
+            let ph = ''; 
+            for(let p in produktet) {
+                produktet[p].forEach((pr,i) => {
+                    ph += `<div class="list-item">
+                        <div><strong>${pr.ikona} ${pr.emri}</strong> (${p})</div>
+                        <div style="display:flex; gap:5px;">
+                            <input type="number" id="c_${p}_${i}" value="${pr.cmimi}" style="width:70px;padding:5px; margin:0;">
+                            <button onclick="ruajCmimTekSettings('${p}',${i})" class="btn-green" style="padding:5px;">Ruaj</button>
+                            <button onclick="fshiProduktTekSettings('${p}',${i})" class="btn-red" style="padding:5px;">🗑️</button>
+                        </div>
+                    </div>`;
+                });
+            }
+            document.getElementById('listaProdukteve').innerHTML = ph; 
+            ngarkoOpsionetKolaudim();
 
             let uh = ''; (JSON.parse(localStorage.getItem('db_users'))||[]).forEach(u => {
                 uh += `<div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid #cbd5e1;">
@@ -849,10 +895,52 @@
             document.getElementById('listaPunetoreve').innerHTML = uh;
         }
 
+        window.shtoProdukt = function() {
+            let pompa = document.getElementById('shtProdPompa').value;
+            let emri = document.getElementById('shtProdEmri').value;
+            let cmimi = parseFloat(document.getElementById('shtProdCmimi').value);
+            let ikona = document.getElementById('shtProdIkona').value || '⛽';
+            
+            if(!emri || !cmimi) return alert("Ju lutem plotësoni emrin dhe çmimin e produktit!");
+            
+            let pId = emri.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
+            
+            if(!produktet[pompa]) produktet[pompa] = [];
+            produktet[pompa].push({ id: pId, emri: emri, ikona: ikona, cmimi: cmimi });
+            
+            localStorage.setItem('db_products', JSON.stringify(produktet));
+            shfaqNjoftim("Produkti i ri u shtua me sukses!");
+            
+            document.getElementById('shtProdEmri').value = '';
+            document.getElementById('shtProdCmimi').value = '';
+            document.getElementById('shtProdIkona').value = '';
+            
+            gjeneroSettings();
+            
+            let currentPumpBtn = document.querySelector('.icon-btn.selected') || document.querySelector('#pompatGrid .icon-btn');
+            if(currentPumpBtn) zgjidhPompen(pompaZgjedhur || 'P1', currentPumpBtn);
+        }
+
+        window.fshiProduktTekSettings = function(p, i) {
+            if(confirm("Jeni i sigurt që doni ta fshini këtë produkt?")) {
+                produktet[p].splice(i, 1);
+                localStorage.setItem('db_products', JSON.stringify(produktet));
+                gjeneroSettings();
+                let currentPumpBtn = document.querySelector('.icon-btn.selected') || document.querySelector('#pompatGrid .icon-btn');
+                if(currentPumpBtn) zgjidhPompen(pompaZgjedhur || 'P1', currentPumpBtn);
+            }
+        }
+
         window.ruajModifikimPunetori = function(id) { let us=JSON.parse(localStorage.getItem('db_users')), idx=us.findIndex(u=>u.id===id); if(idx>-1) { us[idx].emri=document.getElementById(`e_${id}`).value; us[idx].user=document.getElementById(`u_${id}`).value; us[idx].pass=document.getElementById(`p_${id}`).value; if(id!==1){us[idx].roli=document.getElementById(`r_${id}`).value; us[idx].pika=document.getElementById(`pk_${id}`).value;} localStorage.setItem('db_users', JSON.stringify(us)); shfaqNjoftim("Ruajtur!"); gjeneroSettings(); } }
         window.shtoPunetor = function() { let e=document.getElementById('shtEmri').value, u=document.getElementById('shtUser').value, p=document.getElementById('shtPass').value; if(!e||!u) return; let us=JSON.parse(localStorage.getItem('db_users')); us.push({id:Date.now(), emri:e, user:u, pass:p, roli:document.getElementById('shtRoli').value, pika:document.getElementById('shtPika').value}); localStorage.setItem('db_users', JSON.stringify(us)); ['shtEmri','shtUser','shtPass'].forEach(i=>document.getElementById(i).value=''); shfaqNjoftim("Shtuar!"); gjeneroSettings(); }
         window.ruajCmimTekSettings = (p,i) => { let v=document.getElementById(`c_${p}_${i}`).value; if(v>0) { produktet[p][i].cmimi=parseFloat(v); localStorage.setItem('db_products',JSON.stringify(produktet)); shfaqNjoftim("Ruajtur!"); } }
-        window.ngarkoOpsionetKolaudim = () => { let s=document.getElementById('kolProdukti'); s.innerHTML=''; produktet[document.getElementById('kolPompa').value].forEach(x => s.innerHTML+=`<option value="${x.id}">${x.emri}</option>`); }
+        
+        window.ngarkoOpsionetKolaudim = () => { 
+            let s=document.getElementById('kolProdukti'); s.innerHTML=''; 
+            let pZgj = document.getElementById('kolPompa').value;
+            if(produktet[pZgj]) { produktet[pZgj].forEach(x => s.innerHTML+=`<option value="${x.id}">${x.emri}</option>`); }
+        }
+        
         window.ruajKolaudimin = () => { let v=document.getElementById('kolVlera').value, p=document.getElementById('kolPika').value; if(v) { localStorage.setItem('aparat_'+p+'_'+document.getElementById('kolProdukti').value, v); document.getElementById('kolVlera').value=''; shfaqNjoftim("Kalibruar!"); } }
         window.fshiPunetor = (id) => { if(confirm("Fshi?")) { localStorage.setItem('db_users', JSON.stringify(JSON.parse(localStorage.getItem('db_users')).filter(u=>u.id!==id))); gjeneroSettings(); } }
         
