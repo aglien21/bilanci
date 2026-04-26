@@ -184,7 +184,10 @@
                             <div style="flex:4;"><label>Tollon(Litra)</label><input type="number" id="tollonLitra" placeholder="0" oninput="llogaritLive()"></div>
                         </div>
                         
-                        <button class="btn btn-outline" style="padding:12px; font-size:0.95rem; margin-top:12px;" onclick="shtoFatureNder()">💾 Ruaj Këtë Klient në Listë</button>
+                        <div style="display:flex; gap:10px; margin-top:12px;">
+                            <button class="btn btn-outline" style="flex:1; padding:12px; font-size:0.95rem; margin-top:0;" onclick="shtoFatureNder()">💾 Shto në Listë</button>
+                            <button class="btn btn-green" style="flex:1; padding:12px; font-size:0.95rem; margin-top:0; border: 2px solid var(--success);" onclick="ruajShitjen()">✅ Ruaj Shitjen (Kalo te Tjetri)</button>
+                        </div>
                         
                         <div id="listaFaturaveNder" style="margin-top:12px;"></div>
                     </div>
@@ -207,6 +210,12 @@
         </div>
 
         <div id="furnizimet" class="view">
+            <div class="card" style="background:#f8fafc; border: 2px solid #cbd5e1;">
+                <div class="section-title" style="color:var(--primary);">🛢 Gjendja e Cisternave (<span id="titullCisternaPika"></span>)</div>
+                <div id="cisternatGrid"></div>
+                <p style="font-size:0.75rem; color:#64748b; margin-top:10px;">*Këto vlera përditësohen automatikisht nga shitjet dhe furnizimet. Këtu mund t'i modifikoni manualisht.</p>
+            </div>
+
             <div class="card">
                 <div class="section-title">🚛 Regjistro Furnizim Cisternë</div>
                 <div class="form-group"><label>Zgjidh Produktin</label><select id="furnizimProdukti"></select></div>
@@ -214,6 +223,7 @@
                 <div class="form-group"><label>Numri Faturës</label><input type="text" id="furnizimFatura" placeholder="Nr. Faturës..."></div>
                 <button class="btn btn-green" onclick="ruajFurnizimin()">Regjistro Furnizimin</button>
             </div>
+            
             <div class="card">
                 <div class="section-title">Historiku i Furnizimeve</div>
                 <div style="overflow-x: auto;">
@@ -279,6 +289,8 @@
                     </div>
                 </div>
             </div>
+
+            <button class="btn" style="background:#25D366; margin-bottom:15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="hapModalMesazhi()"><span style="font-size:1.2rem;">📱</span> Gjenero Mesazhin për Bankën/Shefat</button>
 
             <div class="card" id="adminLogArea" style="padding: 10px 0;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin: 0 15px 15px 15px;">
@@ -400,7 +412,7 @@
 
     <nav class="bottom-nav" id="bottomNav" style="display: none;">
         <div class="nav-item active" onclick="ndryshoMenu('pompat', this)"><span class="icon">⛽</span>Aparatet</div>
-        <div class="nav-item" id="navFurnizimet" onclick="ndryshoMenu('furnizimet', this); ngarkoTabelenFurnizimeve();"><span class="icon">🚛</span>Cisternat</div>
+        <div class="nav-item" id="navFurnizimet" onclick="ndryshoMenu('furnizimet', this); ngarkoGjendjenCisternave(); ngarkoTabelenFurnizimeve();"><span class="icon">🚛</span>Cisternat</div>
         <div class="nav-item" id="navKafeja" onclick="ndryshoMenu('kafeja', this)"><span class="icon">☕</span>Kafeja</div>
         <div class="nav-item" id="navRaportet" onclick="ndryshoMenu('raportet', this); mbushFiltrinPunetoreve(); gjeneroRaportin();"><span class="icon">📊</span>Raportet</div>
         <div class="nav-item" id="navSettings" onclick="ndryshoMenu('settings', this); gjeneroSettings();"><span class="icon">⚙️</span>Settings</div>
@@ -423,19 +435,32 @@
         </div>
     </div>
 
+    <div id="msgModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center; padding: 20px;">
+        <div style="background:white; padding:20px; border-radius:15px; width:100%; max-width:400px; text-align:center;">
+            <h3 style="color:var(--primary); margin-bottom:10px;">📱 Raporti për Shefat</h3>
+            <p style="font-size:0.75rem; color:#64748b; margin-bottom:10px;">Mund ta redaktosh tekstin më poshtë para se ta kopjosh.</p>
+            <textarea id="msgTextarea" style="width:100%; height:320px; padding:10px; border-radius:8px; border:2px solid var(--border); font-size:0.9rem; margin-bottom:15px; resize:none; font-family:monospace;"></textarea>
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('msgModal').style.display='none'" style="flex:1; padding:12px; background:#e2e8f0; color:#475569; border:none; border-radius:10px; font-weight:bold;">Mbyll</button>
+                <button onclick="kopjoDheMbyllMesazhin()" style="flex:2; padding:12px; background:var(--success); color:white; border:none; border-radius:10px; font-weight:bold;">📋 Kopjo Mesazhin</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let defaultUsers = [
             { id: 1, emri: 'Administrator', user: 'admin', pass: 'admin', roli: 'admin', pika: 'Te Gjitha' }
         ];
         let defaultProdukte = {
-            'P1': [ { id: 'nafte_n_p1', emri: 'Naftë', ikona: '💧', cmimi: 185 } ],
-            'P2': [ { id: 'nafte_n_p2', emri: 'Naftë', ikona: '💧', cmimi: 185 }, { id: 'benzine_p2', emri: 'Benzinë', ikona: '🚗', cmimi: 190 } ],
-            'P3': [ { id: 'gaz_p3', emri: 'Gaz', ikona: '💨', cmimi: 65 } ]
+            'P1': [ { id: 'nafte_n_p1', emri: 'Diesel', ikona: '🛢', cmimi: 206 } ],
+            'P2': [ { id: 'nafte_n_p2', emri: 'Diesel', ikona: '🛢', cmimi: 206 }, { id: 'dynamic_p2', emri: 'Dynamic+', ikona: '⚡', cmimi: 210 }, { id: 'benzine_p2', emri: 'Benzinë 114', ikona: '⛽️', cmimi: 181 } ],
+            'P3': [ { id: 'gaz_p3', emri: 'Gaz Auto', ikona: '🔥', cmimi: 75 } ]
         };
 
         if(!localStorage.getItem('db_users')) localStorage.setItem('db_users', JSON.stringify(defaultUsers));
         if(!localStorage.getItem('db_products')) localStorage.setItem('db_products', JSON.stringify(defaultProdukte));
         if(!localStorage.getItem('db_history')) localStorage.setItem('db_history', JSON.stringify([]));
+        if(!localStorage.getItem('db_cisternat')) localStorage.setItem('db_cisternat', JSON.stringify({})); // Databaza e re e Cisternave
 
         let currentUser = null, pikaAktuale = "Gega Polican", produktet = JSON.parse(localStorage.getItem('db_products')), pompaZgjedhur = '', produktiZgjedhur = null;
         let chartPolican = null;
@@ -490,10 +515,12 @@
             document.getElementById('headerPikaSelect').value = vlera;
             document.getElementById('shfaqPikenTitull').innerText = vlera;
             document.getElementById('shfaqPikenKafe').innerText = vlera;
+            document.getElementById('titullCisternaPika').innerText = vlera;
             if(currentUser && currentUser.roli === 'admin') mbushPunetoretSipasPikes();
             document.getElementById('fushaTeDhenave').style.display = 'none';
             document.querySelectorAll('#pompatGrid .icon-btn').forEach(b => b.classList.remove('selected'));
             document.getElementById('produktetContainer').style.display = 'none';
+            ngarkoGjendjenCisternave();
         }
 
         function mbushPunetoretSipasPikes() {
@@ -601,11 +628,53 @@
             shfaqNjoftim("💾 Fatura u shtua në listë!");
         }
 
+        // RUAJTJA E NJE SHITJEJE TE VECANTE DHE ZBRITJA E CISTERNES
+        window.ruajShitjen = function() {
+            let celesiTurn = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
+            let turni = JSON.parse(localStorage.getItem(celesiTurn));
+            
+            let mbarim = parseFloat(document.getElementById('aparatMbarim').value);
+            if(!mbarim || mbarim <= turni.fillim) return alert("Leximi i aparatit i zbrazët! (Shkruani Leximin e Ri tek kutia Mbyllja e Turnit)");
+
+            let kSasia = parseFloat(document.getElementById('klientSasia').value)||0;
+            let kTipi = document.getElementById('klientTipi').value;
+            let kCmimi = parseFloat(document.getElementById('klientCmimi').value)||produktiZgjedhur.cmimi;
+            let litK = (kTipi === 'leke') ? (kCmimi > 0 ? kSasia / kCmimi : 0) : kSasia;
+            let lekeK = (kTipi === 'leke') ? kSasia : (kSasia * kCmimi);
+            
+            let posSasia = parseFloat(document.getElementById('posSasia').value)||0;
+            let posTipi = document.getElementById('posTipi').value;
+            let lekePOS = (posTipi === 'leke') ? posSasia : (posSasia * produktiZgjedhur.cmimi);
+            
+            let tollonLitra = parseFloat(document.getElementById('tollonLitra').value)||0;
+            let lekeTollon = tollonLitra * produktiZgjedhur.cmimi;
+
+            let litTot = mbarim - turni.fillim;
+            let litNorm = Math.max(0, litTot - litK);
+            let vTot = (litNorm * produktiZgjedhur.cmimi) + lekeK;
+            let cash = vTot - lekePOS - lekeTollon;
+
+            let h = JSON.parse(localStorage.getItem('db_history')) || [];
+            h.push({id: Date.now(), data: new Date().toISOString(), userEmri: turni.punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: turni.fillim, mbarim: mbarim, litra: litTot, xhiro: vTot, cash: cash, pos: lekePOS, tollona: lekeTollon, litraZbritje: litK, tipi: 'shitje', detaje: `Shitje teke`});
+            localStorage.setItem('db_history', JSON.stringify(h));
+
+            // ZBRITJA NGA CISTERNA
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let cistKey = pikaAktuale + '_' + produktiZgjedhur.emri;
+            cist[cistKey] = (parseFloat(cist[cistKey]) || 0) - litTot;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+
+            localStorage.removeItem(celesiTurn);
+            localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, mbarim);
+
+            shfaqNjoftim("✅ Shitja u ruajt. Aparati gati.");
+            zgjidhProduktin(produktiZgjedhur.id, document.querySelector('.icon-btn.selected'));
+        }
+
         window.renderFaturatNder = function() {
             let celesi = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
             let turni = JSON.parse(localStorage.getItem(celesi));
             let html = '';
-            
             if(turni.faturat.length === 0) {
                 html = `<div style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:10px;">Nuk ka fatura të shtuara ende.</div>`;
             } else {
@@ -676,6 +745,7 @@
             document.getElementById('rezLeke').innerText = new Intl.NumberFormat('sq-AL').format(cash) + " L";
         }
 
+        // MBYLLJA E TURNIT (ZBRITJA NGA CISTERNA)
         window.mbyllTurnin = function() {
             let celesiTurn = 'turni_aktiv_' + pikaAktuale + '_' + produktiZgjedhur.id;
             let turni = JSON.parse(localStorage.getItem(celesiTurn));
@@ -714,6 +784,12 @@
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: turni.punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: turni.fillim, mbarim: mbarim, litra: litTot, xhiro: totalFaturuar, cash: cash, pos: totalPOS, tollona: totalTollon, litraZbritje: totalKlientLitra, tipi: 'shitje', detaje: `${turni.faturat.length} Fatura Klienti`});
             localStorage.setItem('db_history', JSON.stringify(h));
 
+            // ZBRITJA NGA CISTERNA
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let cistKey = pikaAktuale + '_' + produktiZgjedhur.emri;
+            cist[cistKey] = (parseFloat(cist[cistKey]) || 0) - litTot;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+
             localStorage.removeItem(celesiTurn);
             localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, mbarim);
 
@@ -721,17 +797,54 @@
             zgjidhProduktin(produktiZgjedhur.id, document.querySelector('.icon-btn.selected'));
         }
 
+        // FURNIZIMET DHE SHTIMI I CISTERNES
         window.ngarkoOpsionetFurnizim = function() { let sel = document.getElementById('furnizimProdukti'); sel.innerHTML = ''; let uniket = {}; for(let p in produktet) { produktet[p].forEach(pr => { uniket[pr.emri] = true; }); } for(let u in uniket) sel.innerHTML += `<option value="${u}">${u}</option>`; }
         window.ruajFurnizimin = function() { 
             let prod = document.getElementById('furnizimProdukti').value, lit = parseFloat(document.getElementById('furnizimLitra').value), fat = document.getElementById('furnizimFatura').value||'-'; if(!lit) return; 
+            
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: prod, pompa: 'Cisternë', fillim: 0, mbarim: 0, litra: lit, xhiro: 0, cash: 0, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'furnizim', detaje: `Fat: ${fat}`});
             localStorage.setItem('db_history', JSON.stringify(h));
-            document.getElementById('furnizimLitra').value=''; shfaqNjoftim("Furnizimi u regjistrua!"); ngarkoTabelenFurnizimeve(); 
+            
+            // SHTIMI NE CISTERNE
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let cistKey = pikaAktuale + '_' + prod;
+            cist[cistKey] = (parseFloat(cist[cistKey]) || 0) + lit;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+
+            document.getElementById('furnizimLitra').value=''; shfaqNjoftim("Furnizimi u regjistrua!"); 
+            ngarkoTabelenFurnizimeve(); ngarkoGjendjenCisternave();
         }
         window.ngarkoTabelenFurnizimeve = function() { let h = JSON.parse(localStorage.getItem('db_history'))||[], f = h.filter(x => x.tipi === 'furnizim').slice(-15).reverse(), tb = document.getElementById('tabelaFurnizimeve'); tb.innerHTML = f.length?f.map(x=>`<tr><td><b>${x.pika}</b></td><td>${new Date(x.data).toLocaleString('sq-AL',{day:'2-digit',month:'2-digit'})} - ${x.produktiEmri}</td><td style="color:var(--success);font-weight:bold;">+${x.litra}L</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;">Asnjë</td></tr>'; }
         
-        // MODIFIKIM: RUAJTJA E KAFES DHE FURNIZIMIT
+        // MENAXHIMI UI I CISTERNAVE
+        window.ngarkoGjendjenCisternave = function() {
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let html = '';
+            let uniket = {};
+            for(let p in produktet) { produktet[p].forEach(pr => { uniket[pr.emri] = true; }); }
+            
+            for(let u in uniket) {
+                let sasia = cist[pikaAktuale + '_' + u] || 0;
+                html += `<div class="info-row" style="background:white; border:1px solid var(--border);">
+                    <span style="color:var(--primary); font-weight:800;">🛢 ${u}</span>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="cist_${u}" value="${sasia.toFixed(2)}" style="width:100px; padding:5px 8px; margin:0; border:2px solid var(--border); border-radius:6px;" step="0.01">
+                        <button class="btn-outline" style="padding:5px 12px; margin:0; border-radius:6px; background:#f8fafc;" onclick="ruajKolaudimCisterne('${u}')">Ruaj</button>
+                    </div>
+                </div>`;
+            }
+            document.getElementById('cisternatGrid').innerHTML = html;
+        }
+
+        window.ruajKolaudimCisterne = function(prod) {
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let vleraERe = parseFloat(document.getElementById('cist_'+prod).value) || 0;
+            cist[pikaAktuale + '_' + prod] = vleraERe;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+            shfaqNjoftim("Gjendja e cisternës u përditësua!");
+        }
+
         window.ruajKafen = function() { 
             let x = parseFloat(document.getElementById('kafeXhiro').value);
             if(!x) return; 
@@ -746,7 +859,6 @@
             let lek = parseFloat(document.getElementById('kafePagesaFurnitor').value);
             if(!lek) return alert("Vendosni vlerën e pagesës në lekë!");
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
-            // Regjistrimi ruhet si kosto (cash negativ) qe te zbres nga totali
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: 'Furnizim Kafe', pompa: 'Shpenzim', fillim: 0, mbarim: 0, litra: 0, xhiro: 0, cash: -lek, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'kafe_furnizim', detaje: `Fat: ${fat}`});
             localStorage.setItem('db_history', JSON.stringify(h));
             document.getElementById('kafeFatura').value=''; document.getElementById('kafePagesaFurnitor').value=''; shfaqNjoftim("Pagesa e furnitorit u ruajt!"); 
@@ -754,7 +866,6 @@
 
         window.mbushFiltrinPunetoreve = function() { let s = document.getElementById('filtriPunetorit'); s.innerHTML = '<option value="te_gjithe">Të gjithë</option>'; (JSON.parse(localStorage.getItem('db_users'))||[]).forEach(u => s.innerHTML += `<option value="${u.emri}">${u.emri}</option>`); }
 
-        // MODIFIKIM: RAPORTIMI ME NGJYRA PER KAFENE/FURNIZIMIN
         window.gjeneroRaportin = function() {
             let h = JSON.parse(localStorage.getItem('db_history')) || [], fPika = document.getElementById('filtriPikesRaport').value, fKoha = document.getElementById('filtriKohes').value, fUser = document.getElementById('filtriPunetorit').value, t = new Date();
             let d = h.filter(x => {
@@ -828,130 +939,69 @@
             });
         }
 
-        window.hapPdfModal = function() {
-            document.getElementById('pdfModal').style.display = 'flex';
-        }
-        
-        window.mbyllPdfModal = function() {
-            document.getElementById('pdfModal').style.display = 'none';
-        }
-
-        window.ekzekutoShkarkiminPdf = function() {
-            let kohaZgjedhur = document.getElementById('pdfKohaZgjedhje').value;
-            let txtKoha = document.getElementById('pdfKohaZgjedhje').options[document.getElementById('pdfKohaZgjedhje').selectedIndex].text;
-            let pikaFiltri = document.getElementById('filtriPikesRaport').options[document.getElementById('filtriPikesRaport').selectedIndex].text;
-
-            mbyllPdfModal();
-            document.getElementById('filtriKohes').value = kohaZgjedhur;
-            gjeneroRaportin();
-
-            let btn = document.getElementById('btnPdf');
-            btn.innerText = "⏳ Përgatitet..."; btn.disabled = true;
-
-            setTimeout(() => {
-                let element = document.getElementById('pdfZona');
-                let opt = {
-                    margin:       5,
-                    filename:     `Raporti_${pikaFiltri.replace(/\s+/g, '_')}_${txtKoha.replace(/\s+/g, '_')}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, windowWidth: 1200, useCORS: true }, 
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                };
-                
-                html2pdf().set(opt).from(element).save().then(() => {
-                    btn.innerText = "📥 Shkarko PDF"; btn.disabled = false;
-                }).catch(e => {
-                    html2pdf().set(opt).from(element).outputPdf('dataurlnewwindow');
-                    btn.innerText = "📥 Shkarko PDF"; btn.disabled = false;
-                });
-            }, 600);
-        }
-
-        // MODIFIKIM: SHTIMI DHE FSHIRJA DINAMIKE E PRODUKTEVE
-        window.gjeneroSettings = function() {
-            let ph = ''; 
-            for(let p in produktet) {
-                produktet[p].forEach((pr,i) => {
-                    ph += `<div class="list-item">
-                        <div><strong>${pr.ikona} ${pr.emri}</strong> (${p})</div>
-                        <div style="display:flex; gap:5px;">
-                            <input type="number" id="c_${p}_${i}" value="${pr.cmimi}" style="width:70px;padding:5px; margin:0;">
-                            <button onclick="ruajCmimTekSettings('${p}',${i})" class="btn-green" style="padding:5px;">Ruaj</button>
-                            <button onclick="fshiProduktTekSettings('${p}',${i})" class="btn-red" style="padding:5px;">🗑️</button>
-                        </div>
-                    </div>`;
-                });
-            }
-            document.getElementById('listaProdukteve').innerHTML = ph; 
-            ngarkoOpsionetKolaudim();
-
-            let uh = ''; (JSON.parse(localStorage.getItem('db_users'))||[]).forEach(u => {
-                uh += `<div style="background:#f1f5f9; padding:10px; border-radius:10px; margin-bottom:15px; border:1px solid #cbd5e1;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>${u.emri}</b> ${u.id!==1?`<button onclick="fshiPunetor(${u.id})" style="background:red;color:white;border:none;padding:5px 10px;">Fshi</button>`:''}</div>
-                    <div class="grid-2" style="margin-bottom:5px;"><input id="e_${u.id}" value="${u.emri}"><input id="u_${u.id}" value="${u.user}"></div>
-                    <div class="grid-options" style="grid-template-columns: 1fr 1fr 1fr;"><input id="p_${u.id}" value="${u.pass}"><select id="pk_${u.id}" ${u.id===1?'disabled':''}><option value="Gega Polican" ${u.pika==='Gega Polican'?'selected':''}>Poliçan</option><option value="Gega Uznove" ${u.pika==='Gega Uznove'?'selected':''}>Uznovë</option><option value="Te Gjitha" ${u.pika==='Te Gjitha'?'selected':''}>Të dyja</option></select><select id="r_${u.id}" ${u.id===1?'disabled':''}><option value="user" ${u.roli==='user'?'selected':''}>Punëtor</option><option value="admin" ${u.roli==='admin'?'selected':''}>Admin</option></select></div>
-                    <button onclick="ruajModifikimPunetori(${u.id})" class="btn-green" style="width:100%;padding:8px;margin-top:10px;">Ruaj</button></div>`;
+        // FUNKSIONET PER MESAZHIN E SHEFAVE/BANKES
+        window.hapModalMesazhi = function() {
+            let h = JSON.parse(localStorage.getItem('db_history')) || [];
+            let fPika = document.getElementById('filtriPikesRaport').value;
+            let fKoha = document.getElementById('filtriKohes').value;
+            
+            // Nese eshte "te gjitha", i japim prioritet pikes aktuale per mesazhin
+            let pikaRaport = fPika === 'te_gjitha' ? pikaAktuale : fPika;
+            
+            let t = new Date();
+            let d = h.filter(x => {
+                let xd = new Date(x.data), mP = (x.pika === pikaRaport), mK=false;
+                if(fKoha==='sot') mK=xd.toDateString()===t.toDateString(); 
+                else if(fKoha==='muaj') mK=xd.getMonth()===t.getMonth()&&xd.getFullYear()===t.getFullYear(); 
+                else if(fKoha==='vit') mK=xd.getFullYear()===t.getFullYear(); 
+                else { let s=new Date(t); s.setDate(t.getDate()-(t.getDay()||7)+1); mK=xd>=s; }
+                return mP && mK;
             });
-            document.getElementById('listaPunetoreve').innerHTML = uh;
-        }
 
-        window.shtoProdukt = function() {
-            let pompa = document.getElementById('shtProdPompa').value;
-            let emri = document.getElementById('shtProdEmri').value;
-            let cmimi = parseFloat(document.getElementById('shtProdCmimi').value);
-            let ikona = document.getElementById('shtProdIkona').value || '⛽';
+            let shitjeLitra = {}, hyrjeLitra = {}, cmimet = {};
+            let totalCash = 0;
             
-            if(!emri || !cmimi) return alert("Ju lutem plotësoni emrin dhe çmimin e produktit!");
-            
-            let pId = emri.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
-            
-            if(!produktet[pompa]) produktet[pompa] = [];
-            produktet[pompa].push({ id: pId, emri: emri, ikona: ikona, cmimi: cmimi });
-            
-            localStorage.setItem('db_products', JSON.stringify(produktet));
-            shfaqNjoftim("Produkti i ri u shtua me sukses!");
-            
-            document.getElementById('shtProdEmri').value = '';
-            document.getElementById('shtProdCmimi').value = '';
-            document.getElementById('shtProdIkona').value = '';
-            
-            gjeneroSettings();
-            
-            let currentPumpBtn = document.querySelector('.icon-btn.selected') || document.querySelector('#pompatGrid .icon-btn');
-            if(currentPumpBtn) zgjidhPompen(pompaZgjedhur || 'P1', currentPumpBtn);
-        }
-
-        window.fshiProduktTekSettings = function(p, i) {
-            if(confirm("Jeni i sigurt që doni ta fshini këtë produkt?")) {
-                produktet[p].splice(i, 1);
-                localStorage.setItem('db_products', JSON.stringify(produktet));
-                gjeneroSettings();
-                let currentPumpBtn = document.querySelector('.icon-btn.selected') || document.querySelector('#pompatGrid .icon-btn');
-                if(currentPumpBtn) zgjidhPompen(pompaZgjedhur || 'P1', currentPumpBtn);
+            // Marrim produktet dhe cmimet nga pika specifike
+            let uniketPike = {};
+            for(let p in produktet) {
+                produktet[p].forEach(pr => {
+                    uniketPike[pr.emri] = true;
+                    cmimet[pr.emri] = pr.cmimi;
+                });
             }
-        }
 
-        window.ruajModifikimPunetori = function(id) { let us=JSON.parse(localStorage.getItem('db_users')), idx=us.findIndex(u=>u.id===id); if(idx>-1) { us[idx].emri=document.getElementById(`e_${id}`).value; us[idx].user=document.getElementById(`u_${id}`).value; us[idx].pass=document.getElementById(`p_${id}`).value; if(id!==1){us[idx].roli=document.getElementById(`r_${id}`).value; us[idx].pika=document.getElementById(`pk_${id}`).value;} localStorage.setItem('db_users', JSON.stringify(us)); shfaqNjoftim("Ruajtur!"); gjeneroSettings(); } }
-        window.shtoPunetor = function() { let e=document.getElementById('shtEmri').value, u=document.getElementById('shtUser').value, p=document.getElementById('shtPass').value; if(!e||!u) return; let us=JSON.parse(localStorage.getItem('db_users')); us.push({id:Date.now(), emri:e, user:u, pass:p, roli:document.getElementById('shtRoli').value, pika:document.getElementById('shtPika').value}); localStorage.setItem('db_users', JSON.stringify(us)); ['shtEmri','shtUser','shtPass'].forEach(i=>document.getElementById(i).value=''); shfaqNjoftim("Shtuar!"); gjeneroSettings(); }
-        window.ruajCmimTekSettings = (p,i) => { let v=document.getElementById(`c_${p}_${i}`).value; if(v>0) { produktet[p][i].cmimi=parseFloat(v); localStorage.setItem('db_products',JSON.stringify(produktet)); shfaqNjoftim("Ruajtur!"); } }
-        
-        window.ngarkoOpsionetKolaudim = () => { 
-            let s=document.getElementById('kolProdukti'); s.innerHTML=''; 
-            let pZgj = document.getElementById('kolPompa').value;
-            if(produktet[pZgj]) { produktet[pZgj].forEach(x => s.innerHTML+=`<option value="${x.id}">${x.emri}</option>`); }
-        }
-        
-        window.ruajKolaudimin = () => { let v=document.getElementById('kolVlera').value, p=document.getElementById('kolPika').value; if(v) { localStorage.setItem('aparat_'+p+'_'+document.getElementById('kolProdukti').value, v); document.getElementById('kolVlera').value=''; shfaqNjoftim("Kalibruar!"); } }
-        window.fshiPunetor = (id) => { if(confirm("Fshi?")) { localStorage.setItem('db_users', JSON.stringify(JSON.parse(localStorage.getItem('db_users')).filter(u=>u.id!==id))); gjeneroSettings(); } }
-        
-        window.resetSistemin = () => { 
-            if(document.getElementById('konfirmoReset').value !== "FSHI") return alert("Ju lutem shtypni fjalën FSHI për të konfirmuar.");
-            if(confirm("Jeni i sigurt? Fshihen vetëm faturat. Punëtorët NUK fshihen!")) { 
-                localStorage.setItem('db_history', JSON.stringify([]));
-                Object.keys(localStorage).forEach(k => { if(k.startsWith('aparat_') || k.startsWith('turni_aktiv_')) localStorage.removeItem(k); });
-                location.reload(); 
-            } 
-        }
-    </script>
-</body>
-</html>
+            // Inicializojme me 0
+            for(let prod in uniketPike) {
+                shitjeLitra[prod] = 0;
+                hyrjeLitra[prod] = 0;
+            }
+
+            d.forEach(x => {
+                if(x.tipi === 'shitje') {
+                    shitjeLitra[x.produktiEmri] = (shitjeLitra[x.produktiEmri] || 0) + x.litra;
+                    totalCash += (x.cash !== undefined ? x.cash : x.xhiro);
+                } else if(x.tipi === 'furnizim') {
+                    hyrjeLitra[x.produktiEmri] = (hyrjeLitra[x.produktiEmri] || 0) + x.litra;
+                } else if(x.tipi === 'kafe' || x.tipi === 'kafe_furnizim') {
+                    totalCash += (x.cash !== undefined ? x.cash : x.xhiro);
+                }
+            });
+
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            
+            let emriPikesDisplay = pikaRaport.replace('Gega ', '');
+            let dataSot = t.toLocaleDateString('en-GB'); // Formati DD/MM/YYYY
+
+            let msg = `📌 Raport Shitjeje – Pika ${emriPikesDisplay}\n🗓 Data: ${dataSot}\n👤 Menaxheri: Myqerem Xhaferi\n\n`;
+            
+            let totalShitjeN = 0, totalGjendjeN = 0;
+
+            for(let prod in uniketPike) {
+                let isNafte = prod.toLowerCase().includes('naft') || prod.toLowerCase().includes('diesel') || prod.toLowerCase().includes('dynamic');
+                let sh = Math.round(shitjeLitra[prod]);
+                let hy = Math.round(hyrjeLitra[prod]);
+                let gj = Math.round(cist[pikaRaport + '_' + prod] || 0);
+                
+                if(isNafte) { totalShitjeN += sh; totalGjendjeN += gj; }
+
+                msg += `🛢 ${prod}\n• Shitje: ${new Intl.NumberFormat('en-US').format(sh)} litra\n• Hyrje: ${new Intl.NumberFormat('en-US').format(hy)} litra\n• Gjendje: ${new Intl.NumberFormat('en-US').format(gj)} litra\n----------------
