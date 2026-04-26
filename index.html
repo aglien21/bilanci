@@ -207,6 +207,11 @@
         </div>
 
         <div id="furnizimet" class="view">
+            <div class="card" id="adminCisternatGjendja" style="display:none; border-color:var(--accent); background:#eff6ff;">
+                <div class="section-title" style="color:var(--accent);">📊 Gjendja Aktuale e Cisternave (Litra)</div>
+                <div id="listaGjendjesCisternave"></div>
+            </div>
+
             <div class="card">
                 <div class="section-title">🚛 Regjistro Furnizim Cisternë</div>
                 <div class="form-group"><label>Zgjidh Produktin</label><select id="furnizimProdukti"></select></div>
@@ -242,6 +247,8 @@
 
         <div id="raportet" class="view">
             <div class="card" style="background: var(--primary); color: white;">
+                <button id="btnHapMesazhin" onclick="hapMesazhiModal()" style="display:none; background:var(--accent); color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; width:100%; margin-bottom:15px; font-size:1rem; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);">💬 Përgatit Mesazhin për Shefat</button>
+                
                 <div class="grid-options" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 15px; gap:5px;">
                     <div>
                         <label style="color:#94a3b8; font-size:0.75rem;">Pika</label>
@@ -400,7 +407,7 @@
 
     <nav class="bottom-nav" id="bottomNav" style="display: none;">
         <div class="nav-item active" onclick="ndryshoMenu('pompat', this)"><span class="icon">⛽</span>Aparatet</div>
-        <div class="nav-item" id="navFurnizimet" onclick="ndryshoMenu('furnizimet', this); ngarkoTabelenFurnizimeve();"><span class="icon">🚛</span>Cisternat</div>
+        <div class="nav-item" id="navFurnizimet" onclick="ndryshoMenu('furnizimet', this); ngarkoTabelenFurnizimeve(); ndertoUICisternat();"><span class="icon">🚛</span>Cisternat</div>
         <div class="nav-item" id="navKafeja" onclick="ndryshoMenu('kafeja', this)"><span class="icon">☕</span>Kafeja</div>
         <div class="nav-item" id="navRaportet" onclick="ndryshoMenu('raportet', this); mbushFiltrinPunetoreve(); gjeneroRaportin();"><span class="icon">📊</span>Raportet</div>
         <div class="nav-item" id="navSettings" onclick="ndryshoMenu('settings', this); gjeneroSettings();"><span class="icon">⚙️</span>Settings</div>
@@ -419,6 +426,30 @@
             <div style="display:flex; gap:10px;">
                 <button onclick="mbyllPdfModal()" style="flex:1; padding:14px; background:#e2e8f0; color:#475569; border:none; border-radius:10px; font-weight:bold; font-size:1rem;">Anulo</button>
                 <button onclick="ekzekutoShkarkiminPdf()" style="flex:1; padding:14px; background:var(--danger); color:white; border:none; border-radius:10px; font-weight:bold; font-size:1rem;">Shkarko</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mesazhiModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center; padding: 20px;">
+        <div style="background:white; padding:25px; border-radius:15px; width:100%; max-width:400px; text-align:center;">
+            <h3 style="color:var(--primary); margin-bottom:15px;">💬 Gjenero Mesazhin</h3>
+            <div class="grid-2" style="margin-bottom:15px;">
+                <div>
+                    <label style="font-size:0.8rem; color:#64748b; font-weight:bold;">Nga Data</label>
+                    <input type="date" id="msgDataNga" style="padding:10px; font-size:0.9rem; margin-bottom:0;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#64748b; font-weight:bold;">Deri Data</label>
+                    <input type="date" id="msgDataDeri" style="padding:10px; font-size:0.9rem; margin-bottom:0;">
+                </div>
+            </div>
+            <button class="btn btn-green" onclick="krijoTekstinMesazhit()">Përgatit Tekstin</button>
+            
+            <textarea id="mesazhiTekst" style="width:100%; height:200px; margin-top:15px; padding:10px; border:2px solid var(--border); border-radius:10px; font-family:monospace; font-size:0.9rem; resize:none;" readonly></textarea>
+            
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button onclick="document.getElementById('mesazhiModal').style.display='none'" style="flex:1; padding:14px; background:#e2e8f0; color:#475569; border:none; border-radius:10px; font-weight:bold; font-size:1rem;">Mbyll</button>
+                <button onclick="kopjoMesazhin()" style="flex:1; padding:14px; background:var(--accent); color:white; border:none; border-radius:10px; font-weight:bold; font-size:1rem;">📋 Kopjo</button>
             </div>
         </div>
     </div>
@@ -445,19 +476,14 @@
             } catch(e) { return defaultVal; }
         }
 
-        let usersDB = safeParse('db_users', defaultUsers);
-        localStorage.setItem('db_users', JSON.stringify(usersDB));
-
-        let produktet = safeParse('db_products', defaultProdukte);
-        localStorage.setItem('db_products', JSON.stringify(produktet));
-
-        let historyDB = safeParse('db_history', []);
-        localStorage.setItem('db_history', JSON.stringify(historyDB));
+        let usersDB = safeParse('db_users', defaultUsers); localStorage.setItem('db_users', JSON.stringify(usersDB));
+        let produktet = safeParse('db_products', defaultProdukte); localStorage.setItem('db_products', JSON.stringify(produktet));
+        let historyDB = safeParse('db_history', []); localStorage.setItem('db_history', JSON.stringify(historyDB));
+        let cisternatDB = safeParse('db_cisternat', {}); localStorage.setItem('db_cisternat', JSON.stringify(cisternatDB));
 
         let currentUser = null, pikaAktuale = "Gega Polican", pompaZgjedhur = '', produktiZgjedhur = null;
         let chartPolican = null; let chartUznove = null;
 
-        // Mbushim direkt dropdownin pa pritur window.onload!
         let selLogin = document.getElementById('loginUserSelect');
         if (selLogin) {
             selLogin.innerHTML = '<option value="" disabled selected>Kush po identifikohet?</option>';
@@ -486,11 +512,16 @@
 
             if(currentUser.roli === 'user') {
                 ['navRaportet','navSettings','navFurnizimet','navKafeja'].forEach(id => document.getElementById(id).style.display = 'none');
+                if(document.getElementById('btnHapMesazhin')) document.getElementById('btnHapMesazhin').style.display = 'none';
+                if(document.getElementById('adminCisternatGjendja')) document.getElementById('adminCisternatGjendja').style.display = 'none';
                 pikaAktuale = currentUser.pika || 'Gega Polican';
                 let sel = document.getElementById('headerPikaSelect'); sel.value = pikaAktuale; sel.disabled = true;
             } else {
                 ['navRaportet','navSettings','navFurnizimet','navKafeja'].forEach(id => document.getElementById(id).style.display = 'block');
+                if(document.getElementById('btnHapMesazhin')) document.getElementById('btnHapMesazhin').style.display = 'block';
+                if(document.getElementById('adminCisternatGjendja')) document.getElementById('adminCisternatGjendja').style.display = 'block';
                 document.getElementById('headerPikaSelect').disabled = false;
+                ndertoUICisternat();
             }
             ndryshoPikenEkzekutim(document.getElementById('headerPikaSelect').value);
             ndryshoMenu('pompat', document.querySelector('.nav-item'));
@@ -727,6 +758,11 @@
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: turni.punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: turni.fillim, mbarim: mbarim, litra: litTot, xhiro: totalFaturuar, cash: cash, pos: totalPOS, tollona: totalTollon, litraZbritje: totalKlientLitra, tipi: 'shitje', detaje: `${turni.faturat.length} Fatura Klienti`});
             localStorage.setItem('db_history', JSON.stringify(h));
 
+            // ZBRET LITRAT NGA CISTERNA
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            cist[produktiZgjedhur.emri] = (parseFloat(cist[produktiZgjedhur.emri]) || 0) - litTot;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+
             localStorage.removeItem(celesiTurn);
             localStorage.setItem('aparat_' + pikaAktuale + '_' + produktiZgjedhur.id, mbarim);
 
@@ -734,16 +770,56 @@
             zgjidhProduktin(produktiZgjedhur.id, document.querySelector('.icon-btn.selected'));
         }
 
+        /* ---------------- LOGJIKA E CISTERNAVE ---------------- */
+        window.ndertoUICisternat = function() {
+            let html = '';
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let uniqueProds = new Set();
+            for(let p in produktet) { produktet[p].forEach(pr => uniqueProds.add(pr.emri)); }
+            
+            uniqueProds.forEach(pr => {
+                let v = cist[pr] || 0;
+                html += `<div class="info-row" style="margin-bottom:8px; padding:8px 12px;">
+                    <span style="color:var(--primary); font-weight:bold;">${pr}</span>
+                    <div style="display:flex; gap:5px; align-items:center;">
+                        <input type="number" id="cist_inp_${pr.replace(/\s+/g, '')}" value="${parseFloat(v).toFixed(2)}" style="padding:8px; margin:0; width:120px; font-size:1rem; text-align:right;">
+                        <button class="btn-green" style="padding:8px 15px; margin:0; font-size:1rem;" onclick="ruajKalibrimCisterne('${pr}')">✔️ Ruaj</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('listaGjendjesCisternave').innerHTML = html;
+        }
+
+        window.ruajKalibrimCisterne = function(prod) {
+            let inpId = 'cist_inp_' + prod.replace(/\s+/g, '');
+            let v = parseFloat(document.getElementById(inpId).value);
+            if(isNaN(v)) return;
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            cist[prod] = v;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+            shfaqNjoftim(`Gjendja për ${prod} u përditësua!`);
+            ndertoUICisternat();
+        }
+
         window.ngarkoOpsionetFurnizim = function() { let sel = document.getElementById('furnizimProdukti'); sel.innerHTML = ''; let uniket = {}; for(let p in produktet) { produktet[p].forEach(pr => { uniket[pr.emri] = true; }); } for(let u in uniket) sel.innerHTML += `<option value="${u}">${u}</option>`; }
+        
         window.ruajFurnizimin = function() { 
             let prod = document.getElementById('furnizimProdukti').value, lit = parseFloat(document.getElementById('furnizimLitra').value), fat = document.getElementById('furnizimFatura').value||'-'; if(!lit) return; 
             let h = JSON.parse(localStorage.getItem('db_history')) || [];
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: prod, pompa: 'Cisternë', fillim: 0, mbarim: 0, litra: lit, xhiro: 0, cash: 0, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'furnizim', detaje: `Fat: ${fat}`});
             localStorage.setItem('db_history', JSON.stringify(h));
-            document.getElementById('furnizimLitra').value=''; shfaqNjoftim("Furnizimi u regjistrua!"); ngarkoTabelenFurnizimeve(); 
+            
+            // SHTON LITRAT NE CISTERNE
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            cist[prod] = (parseFloat(cist[prod]) || 0) + lit;
+            localStorage.setItem('db_cisternat', JSON.stringify(cist));
+
+            document.getElementById('furnizimLitra').value=''; shfaqNjoftim("Furnizimi u regjistrua dhe cisterna u mbush!"); 
+            ngarkoTabelenFurnizimeve(); ndertoUICisternat();
         }
         window.ngarkoTabelenFurnizimeve = function() { let h = JSON.parse(localStorage.getItem('db_history'))||[], f = h.filter(x => x.tipi === 'furnizim').slice(-15).reverse(), tb = document.getElementById('tabelaFurnizimeve'); tb.innerHTML = f.length?f.map(x=>`<tr><td><b>${x.pika}</b></td><td>${new Date(x.data).toLocaleString('sq-AL',{day:'2-digit',month:'2-digit'})} - ${x.produktiEmri}</td><td style="color:var(--success);font-weight:bold;">+${x.litra}L</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;">Asnjë</td></tr>'; }
         
+        /* ---------------- KAFEJA ---------------- */
         window.ruajKafen = function() { 
             let x = parseFloat(document.getElementById('kafeXhiro').value);
             if(!x) return; 
@@ -765,6 +841,7 @@
 
         window.mbushFiltrinPunetoreve = function() { let s = document.getElementById('filtriPunetorit'); s.innerHTML = '<option value="te_gjithe">Të gjithë</option>'; (JSON.parse(localStorage.getItem('db_users'))||[]).forEach(u => s.innerHTML += `<option value="${u.emri}">${u.emri}</option>`); }
 
+        /* ---------------- RAPORTI & MESAZHI ---------------- */
         window.gjeneroRaportin = function() {
             let h = JSON.parse(localStorage.getItem('db_history')) || [], fPika = document.getElementById('filtriPikesRaport').value, fKoha = document.getElementById('filtriKohes').value, fUser = document.getElementById('filtriPunetorit').value, t = new Date();
             let d = h.filter(x => {
@@ -838,13 +915,68 @@
             });
         }
 
-        window.hapPdfModal = function() {
-            document.getElementById('pdfModal').style.display = 'flex';
+        window.hapMesazhiModal = function() {
+            document.getElementById('mesazhiModal').style.display = 'flex';
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('msgDataNga').value = today;
+            document.getElementById('msgDataDeri').value = today;
+            document.getElementById('mesazhiTekst').value = '';
         }
-        
-        window.mbyllPdfModal = function() {
-            document.getElementById('pdfModal').style.display = 'none';
+
+        window.krijoTekstinMesazhit = function() {
+            let dNga = new Date(document.getElementById('msgDataNga').value);
+            let dDeri = new Date(document.getElementById('msgDataDeri').value);
+            dDeri.setHours(23, 59, 59, 999);
+
+            if(isNaN(dNga) || isNaN(dDeri)) return alert("Ju lutem zgjidhni datat e sakta!");
+
+            let h = JSON.parse(localStorage.getItem('db_history')) || [];
+            let f = h.filter(x => { let xd = new Date(x.data); return xd >= dNga && xd <= dDeri; });
+
+            let tCash = 0, tPos = 0, tTollon = 0;
+            let litra = {};
+            let kafeCash = 0;
+
+            f.forEach(x => {
+                if(x.tipi === 'shitje') {
+                    tCash += x.cash;
+                    tPos += (x.pos || 0);
+                    tTollon += (x.tollona || 0);
+                    litra[x.produktiEmri] = (litra[x.produktiEmri]||0) + x.litra;
+                } else if(x.tipi === 'kafe' || x.tipi === 'kafe_furnizim') {
+                    kafeCash += x.cash;
+                    tCash += x.cash;
+                }
+            });
+
+            let msg = `📊 RAPORTI I PUNËS\n`;
+            msg += `📅 Periudha: ${dNga.toLocaleDateString('sq-AL')} - ${dDeri.toLocaleDateString('sq-AL')}\n\n`;
+            msg += `💰 TOTALI CASH (Dorëzim): ${new Intl.NumberFormat('sq-AL').format(tCash)} Lekë\n`;
+            msg += `💳 POS: ${new Intl.NumberFormat('sq-AL').format(tPos)} Lekë\n`;
+            msg += `🎟️ Tollona: ${new Intl.NumberFormat('sq-AL').format(tTollon)} Lekë\n`;
+            msg += `☕ Kafeja (Neto): ${new Intl.NumberFormat('sq-AL').format(kafeCash)} Lekë\n\n`;
+            msg += `⛽ SHITJET (LITRA):\n`;
+            for(let p in litra) { msg += `- ${p}: ${litra[p].toFixed(2)} L\n`; }
+            
+            msg += `\n🚛 GJENDJA AKTUALE E CISTERNAVE:\n`;
+            let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
+            let cistKye = Object.keys(cist);
+            if(cistKye.length === 0) msg += `- S'ka të dhëna\n`;
+            for(let p in cist) { msg += `- ${p}: ${parseFloat(cist[p]).toFixed(2)} Litra\n`; }
+
+            document.getElementById('mesazhiTekst').value = msg;
         }
+
+        window.kopjoMesazhin = function() {
+            let txt = document.getElementById("mesazhiTekst");
+            if(!txt.value) return alert("Përgatit mesazhin fillimisht!");
+            txt.select();
+            document.execCommand("copy");
+            shfaqNjoftim("Mesazhi u kopjua! Bëji Paste në WhatsApp.");
+        }
+
+        window.hapPdfModal = function() { document.getElementById('pdfModal').style.display = 'flex'; }
+        window.mbyllPdfModal = function() { document.getElementById('pdfModal').style.display = 'none'; }
 
         window.ekzekutoShkarkiminPdf = function() {
             let kohaZgjedhur = document.getElementById('pdfKohaZgjedhje').value;
@@ -860,13 +992,7 @@
 
             setTimeout(() => {
                 let element = document.getElementById('pdfZona');
-                let opt = {
-                    margin:       5,
-                    filename:     `Raporti_${pikaFiltri.replace(/\s+/g, '_')}_${txtKoha.replace(/\s+/g, '_')}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, windowWidth: 1200, useCORS: true }, 
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                };
+                let opt = { margin: 5, filename: `Raporti_${pikaFiltri.replace(/\s+/g, '_')}_${txtKoha.replace(/\s+/g, '_')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, windowWidth: 1200, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
                 
                 html2pdf().set(opt).from(element).save().then(() => {
                     btn.innerText = "📥 Shkarko PDF"; btn.disabled = false;
@@ -877,6 +1003,7 @@
             }, 600);
         }
 
+        /* ---------------- SETTINGS ---------------- */
         window.gjeneroSettings = function() {
             let ph = ''; 
             for(let p in produktet) {
@@ -928,6 +1055,7 @@
             
             let currentPumpBtn = document.querySelector('.icon-btn.selected') || document.querySelector('#pompatGrid .icon-btn');
             if(currentPumpBtn) zgjidhPompen(pompaZgjedhur || 'P1', currentPumpBtn);
+            ndertoUICisternat();
         }
 
         window.fshiProduktTekSettings = function(p, i) {
@@ -937,6 +1065,7 @@
                 gjeneroSettings();
                 let currentPumpBtn = document.querySelector('.icon-btn.selected') || document.querySelector('#pompatGrid .icon-btn');
                 if(currentPumpBtn) zgjidhPompen(pompaZgjedhur || 'P1', currentPumpBtn);
+                ndertoUICisternat();
             }
         }
 
@@ -957,7 +1086,7 @@
             if(document.getElementById('konfirmoReset').value !== "FSHI") return alert("Ju lutem shtypni fjalën FSHI për të konfirmuar.");
             if(confirm("Jeni i sigurt? Fshihen vetëm faturat. Punëtorët NUK fshihen!")) { 
                 localStorage.setItem('db_history', JSON.stringify([]));
-                Object.keys(localStorage).forEach(k => { if(k.startsWith('aparat_') || k.startsWith('turni_aktiv_')) localStorage.removeItem(k); });
+                Object.keys(localStorage).forEach(k => { if(k.startsWith('aparat_') || k.startsWith('turni_aktiv_') || k === 'db_cisternat') localStorage.removeItem(k); });
                 location.reload(); 
             } 
         }
