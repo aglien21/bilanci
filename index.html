@@ -445,7 +445,7 @@
             </div>
             <button class="btn btn-green" onclick="krijoTekstinMesazhit()">Përgatit Tekstin</button>
             
-            <textarea id="mesazhiTekst" style="width:100%; height:200px; margin-top:15px; padding:10px; border:2px solid var(--border); border-radius:10px; font-family:monospace; font-size:0.9rem; resize:none;" readonly></textarea>
+            <textarea id="mesazhiTekst" style="width:100%; height:250px; margin-top:15px; padding:10px; border:2px solid var(--border); border-radius:10px; font-family:monospace; font-size:0.85rem; resize:none;" readonly></textarea>
             
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button onclick="document.getElementById('mesazhiModal').style.display='none'" style="flex:1; padding:14px; background:#e2e8f0; color:#475569; border:none; border-radius:10px; font-weight:bold; font-size:1rem;">Mbyll</button>
@@ -758,7 +758,6 @@
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: turni.punetori, pika: pikaAktuale, produktiEmri: produktiZgjedhur.emri, pompa: pompaZgjedhur, fillim: turni.fillim, mbarim: mbarim, litra: litTot, xhiro: totalFaturuar, cash: cash, pos: totalPOS, tollona: totalTollon, litraZbritje: totalKlientLitra, tipi: 'shitje', detaje: `${turni.faturat.length} Fatura Klienti`});
             localStorage.setItem('db_history', JSON.stringify(h));
 
-            // ZBRET LITRAT NGA CISTERNA
             let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
             cist[produktiZgjedhur.emri] = (parseFloat(cist[produktiZgjedhur.emri]) || 0) - litTot;
             localStorage.setItem('db_cisternat', JSON.stringify(cist));
@@ -770,7 +769,6 @@
             zgjidhProduktin(produktiZgjedhur.id, document.querySelector('.icon-btn.selected'));
         }
 
-        /* ---------------- LOGJIKA E CISTERNAVE ---------------- */
         window.ndertoUICisternat = function() {
             let html = '';
             let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
@@ -809,7 +807,6 @@
             h.push({id: Date.now(), data: new Date().toISOString(), userEmri: currentUser.emri, pika: pikaAktuale, produktiEmri: prod, pompa: 'Cisternë', fillim: 0, mbarim: 0, litra: lit, xhiro: 0, cash: 0, pos: 0, tollona: 0, litraZbritje: 0, tipi: 'furnizim', detaje: `Fat: ${fat}`});
             localStorage.setItem('db_history', JSON.stringify(h));
             
-            // SHTON LITRAT NE CISTERNE
             let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
             cist[prod] = (parseFloat(cist[prod]) || 0) + lit;
             localStorage.setItem('db_cisternat', JSON.stringify(cist));
@@ -819,7 +816,6 @@
         }
         window.ngarkoTabelenFurnizimeve = function() { let h = JSON.parse(localStorage.getItem('db_history'))||[], f = h.filter(x => x.tipi === 'furnizim').slice(-15).reverse(), tb = document.getElementById('tabelaFurnizimeve'); tb.innerHTML = f.length?f.map(x=>`<tr><td><b>${x.pika}</b></td><td>${new Date(x.data).toLocaleString('sq-AL',{day:'2-digit',month:'2-digit'})} - ${x.produktiEmri}</td><td style="color:var(--success);font-weight:bold;">+${x.litra}L</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;">Asnjë</td></tr>'; }
         
-        /* ---------------- KAFEJA ---------------- */
         window.ruajKafen = function() { 
             let x = parseFloat(document.getElementById('kafeXhiro').value);
             if(!x) return; 
@@ -841,7 +837,6 @@
 
         window.mbushFiltrinPunetoreve = function() { let s = document.getElementById('filtriPunetorit'); s.innerHTML = '<option value="te_gjithe">Të gjithë</option>'; (JSON.parse(localStorage.getItem('db_users'))||[]).forEach(u => s.innerHTML += `<option value="${u.emri}">${u.emri}</option>`); }
 
-        /* ---------------- RAPORTI & MESAZHI ---------------- */
         window.gjeneroRaportin = function() {
             let h = JSON.parse(localStorage.getItem('db_history')) || [], fPika = document.getElementById('filtriPikesRaport').value, fKoha = document.getElementById('filtriKohes').value, fUser = document.getElementById('filtriPunetorit').value, t = new Date();
             let d = h.filter(x => {
@@ -851,8 +846,7 @@
             });
 
             let tNafte=0, tCash=0;
-            let lpPolican = {};
-            let lpUznove = {};
+            let lpPolican = {}; let lpUznove = {};
             let htmlP='', htmlU='';
 
             d.slice().reverse().forEach(x => {
@@ -906,15 +900,11 @@
             if(chartUznove) chartUznove.destroy();
             
             let bgColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b'];
-            
-            chartPolican = new Chart(document.getElementById('chartPolican').getContext('2d'), { 
-                type: 'bar', data: { labels: Object.keys(lpPolican), datasets: [{ data: Object.values(lpPolican), backgroundColor: bgColors }] }, options: { plugins: { legend: { display: false } } } 
-            });
-            chartUznove = new Chart(document.getElementById('chartUznove').getContext('2d'), { 
-                type: 'bar', data: { labels: Object.keys(lpUznove), datasets: [{ data: Object.values(lpUznove), backgroundColor: bgColors }] }, options: { plugins: { legend: { display: false } } } 
-            });
+            chartPolican = new Chart(document.getElementById('chartPolican').getContext('2d'), { type: 'bar', data: { labels: Object.keys(lpPolican), datasets: [{ data: Object.values(lpPolican), backgroundColor: bgColors }] }, options: { plugins: { legend: { display: false } } } });
+            chartUznove = new Chart(document.getElementById('chartUznove').getContext('2d'), { type: 'bar', data: { labels: Object.keys(lpUznove), datasets: [{ data: Object.values(lpUznove), backgroundColor: bgColors }] }, options: { plugins: { legend: { display: false } } } });
         }
 
+        /* ---------------- LOGJIKA E MESAZHIT FORMAT STRIKT ---------------- */
         window.hapMesazhiModal = function() {
             document.getElementById('mesazhiModal').style.display = 'flex';
             let today = new Date().toISOString().split('T')[0];
@@ -930,39 +920,95 @@
 
             if(isNaN(dNga) || isNaN(dDeri)) return alert("Ju lutem zgjidhni datat e sakta!");
 
-            let h = JSON.parse(localStorage.getItem('db_history')) || [];
-            let f = h.filter(x => { let xd = new Date(x.data); return xd >= dNga && xd <= dDeri; });
+            let pikaRaport = document.getElementById('filtriPikesRaport').value;
+            let pikaEmri = (pikaRaport === 'te_gjitha') ? "Të Dyja" : (pikaRaport === 'Gega Polican' ? 'Polican' : 'Uznove');
 
-            let tCash = 0, tPos = 0, tTollon = 0;
-            let litra = {};
-            let kafeCash = 0;
+            let h = JSON.parse(localStorage.getItem('db_history')) || [];
+            let f = h.filter(x => { 
+                let xd = new Date(x.data); 
+                let dateMatch = xd >= dNga && xd <= dDeri;
+                let pikaMatch = (pikaRaport === 'te_gjitha' || x.pika === pikaRaport);
+                return dateMatch && pikaMatch;
+            });
+
+            let shitjeLitra = {};
+            let hyrjeLitra = {};
+            let totalCash = 0;
 
             f.forEach(x => {
                 if(x.tipi === 'shitje') {
-                    tCash += x.cash;
-                    tPos += (x.pos || 0);
-                    tTollon += (x.tollona || 0);
-                    litra[x.produktiEmri] = (litra[x.produktiEmri]||0) + x.litra;
-                } else if(x.tipi === 'kafe' || x.tipi === 'kafe_furnizim') {
-                    kafeCash += x.cash;
-                    tCash += x.cash;
+                    // Mbledhim vetem CASH-in real te dorzuar (te paster nga tollonat, pikat, etj)
+                    totalCash += x.cash; 
+                    shitjeLitra[x.produktiEmri] = (shitjeLitra[x.produktiEmri]||0) + x.litra;
+                } else if (x.tipi === 'furnizim') {
+                    hyrjeLitra[x.produktiEmri] = (hyrjeLitra[x.produktiEmri]||0) + x.litra;
                 }
             });
 
-            let msg = `📊 RAPORTI I PUNËS\n`;
-            msg += `📅 Periudha: ${dNga.toLocaleDateString('sq-AL')} - ${dDeri.toLocaleDateString('sq-AL')}\n\n`;
-            msg += `💰 TOTALI CASH (Dorëzim): ${new Intl.NumberFormat('sq-AL').format(tCash)} Lekë\n`;
-            msg += `💳 POS: ${new Intl.NumberFormat('sq-AL').format(tPos)} Lekë\n`;
-            msg += `🎟️ Tollona: ${new Intl.NumberFormat('sq-AL').format(tTollon)} Lekë\n`;
-            msg += `☕ Kafeja (Neto): ${new Intl.NumberFormat('sq-AL').format(kafeCash)} Lekë\n\n`;
-            msg += `⛽ SHITJET (LITRA):\n`;
-            for(let p in litra) { msg += `- ${p}: ${litra[p].toFixed(2)} L\n`; }
-            
-            msg += `\n🚛 GJENDJA AKTUALE E CISTERNAVE:\n`;
             let cist = JSON.parse(localStorage.getItem('db_cisternat')) || {};
-            let cistKye = Object.keys(cist);
-            if(cistKye.length === 0) msg += `- S'ka të dhëna\n`;
-            for(let p in cist) { msg += `- ${p}: ${parseFloat(cist[p]).toFixed(2)} Litra\n`; }
+            
+            let cmimet = {};
+            for(let pompa in produktet) {
+                produktet[pompa].forEach(pr => {
+                    cmimet[pr.emri] = pr.cmimi;
+                });
+            }
+            
+            let allProdNamesArr = [...new Set([...Object.keys(shitjeLitra), ...Object.keys(hyrjeLitra), ...Object.keys(cist), ...Object.keys(cmimet)])];
+            // HEQIM KAFENE NGA LISTA E PRODUKTEVE
+            let allProdNames = allProdNamesArr.filter(p => p.toLowerCase() !== 'kafe' && p.toLowerCase() !== 'furnizim kafe');
+
+            let dStr = (dNga.toDateString() === dDeri.toDateString()) ? dNga.toLocaleDateString('en-GB') : dNga.toLocaleDateString('en-GB') + ' - ' + dDeri.toLocaleDateString('en-GB');
+            
+            let msg = `📌 Raport Shitjeje – Pika ${pikaEmri}\n`;
+            msg += `🗓 Data: ${dStr}\n`;
+            msg += `👤 Menaxheri: Myqerem Xhaferi\n\n`;
+
+            let shitjeTotN = 0;
+            let gjendjeTotN = 0;
+            let hasNafte = false;
+            
+            // Per te vendosur presjen fiks si ne shabllonin e thene (psh 14,747)
+            const formatNum = (num) => new Intl.NumberFormat('en-US').format(num || 0);
+
+            allProdNames.forEach(p => {
+                let isNaft = /naft|diesel|dynamic/i.test(p);
+                let s = shitjeLitra[p] || 0;
+                let h_val = hyrjeLitra[p] || 0;
+                let g = cist[p] || 0;
+                
+                if(isNaft) {
+                    shitjeTotN += s;
+                    gjendjeTotN += g;
+                    hasNafte = true;
+                }
+
+                let icon = '🛢';
+                if(/benz/i.test(p)) icon = '⛽️';
+                else if(/gaz/i.test(p)) icon = '🔥';
+                else if(/dynamic/i.test(p)) icon = '⚡';
+
+                msg += `${icon} ${p}\n`;
+                msg += `• Shitje: ${formatNum(s)} litra\n`;
+                msg += `• Hyrje: ${formatNum(h_val)} litra\n`;
+                msg += `• Gjendje: ${formatNum(g)} litra\n`;
+                msg += `--------------------\n`;
+            });
+
+            if(hasNafte) {
+                msg += `🔢 Shitje totale N: ${formatNum(shitjeTotN)} litra\n`;
+                msg += `📦 Gjendje totale N: ${formatNum(gjendjeTotN)} litra\n`;
+                msg += `-----------------\n`;
+            }
+
+            msg += `🏦 Derdhje në bankë:\n ${formatNum(totalCash)} Lekë\n`;
+            msg += `-------------------\n`;
+            msg += `📊 Çmimet në tabelë:\n`;
+            allProdNames.forEach(p => {
+                if(cmimet[p]) {
+                    msg += `• ${p}: ${cmimet[p]} Lekë/Litër\n`;
+                }
+            });
 
             document.getElementById('mesazhiTekst').value = msg;
         }
